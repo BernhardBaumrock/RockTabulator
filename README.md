@@ -11,3 +11,14 @@ Goals
 * Extendable via plugins
   * custom formatters, filters etc. in the module
   * easy for the user to add own plugins
+
+Features
+
+* column aggregations
+* smart filter
+* rowActions
+* date formatters
+* currency formatters
+* tooltips
+* icons
+* buttons
