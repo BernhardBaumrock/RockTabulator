@@ -22,3 +22,6 @@ Features
 * tooltips
 * icons
 * buttons
+* batcher (https://processwire.com/talk/topic/15524-previewdiscussion-rockdatatables/?do=findComment&comment=167165)
+* action buttons (+batcher)
+* ProcessModule for Preview/Debugging
