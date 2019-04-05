@@ -11,6 +11,7 @@ Goals
 * Extendable via plugins
   * custom formatters, filters etc. in the module
   * easy for the user to add own plugins
+  * plugins should be built in a way that they can be submitted as PR directly to tabulator (eg smart filter could be a good contribution)
 
 Features
 
