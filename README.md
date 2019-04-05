@@ -17,11 +17,20 @@ Features
 * column aggregations
 * smart filter
 * rowActions
-* date formatters
-* currency formatters
 * tooltips
 * icons
 * buttons
 * batcher (https://processwire.com/talk/topic/15524-previewdiscussion-rockdatatables/?do=findComment&comment=167165)
 * action buttons (+batcher)
 * ProcessModule for Preview/Debugging
+* easy API to get data (get rows, cols, selections etc)
+
+Formatters
+
+* colored cells
+* colored bars / progress bars / quota bars
+* yes/no columns (https://i.imgur.com/P8Bhmfw.png)
+* icons before/after aways/on hover
+* currency
+* date
+* numbers (digits after comma)
