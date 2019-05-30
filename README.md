@@ -6,6 +6,7 @@ Goals
   * via SQL
   * via PHP / RockFinder
   * via JS -> eg runtime tables, aggregations of other tables
+  * from JSON
 * Good documentation
 * Events for interaction (init, draw, redraw?)
 * Extendable via plugins
