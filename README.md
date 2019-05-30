@@ -14,6 +14,7 @@ Goals
   * plugins should be built in a way that they can be submitted as PR directly to tabulator (eg smart filter could be a good contribution)
 * Support only backend
 * Support only Uikit Theme
+* ONE Endpoint for all operations --> RockFinder needs to return data at /admin/rockfinder/field_x AND this should also be used for executing actions (eg /field_x/addPage/?parent=123)
 
 Features
 
