@@ -29,6 +29,8 @@ Features
 * action buttons (+batcher)
 * ProcessModule for Preview/Debugging
 * easy API to get data (get rows, cols, selections etc)
+* handle "no rows" situation properly, make $('#field').trigger('reload') possible; this is necessary when you create new entries for an empty grid (where the grid does not now proper column headings, because there is no data)
+* events for reloading data when panels are closed
 
 Formatters
 
