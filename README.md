@@ -1,6 +1,6 @@
 # RockTabulator
 
-Goals
+## Goals
 
 * Set Data easily
   * via SQL
@@ -16,8 +16,9 @@ Goals
 * Support only backend
 * Support only Uikit Theme
 * ONE Endpoint for all operations --> RockFinder needs to return data at /admin/rockfinder/field_x AND this should also be used for executing actions (eg /field_x/addPage/?parent=123)
+* easy colDef JS syntax (see example below)
 
-Features
+## Features
 
 * column aggregations
 * smart filter
@@ -33,7 +34,7 @@ Features
 * events for reloading data when panels are closed
 * predefined regions to add custom UI elements (buttons, filters, notes)
 
-Formatters
+## Formatters
 
 * colored cells
 * colored bars / progress bars / quota bars
@@ -42,3 +43,15 @@ Formatters
 * currency
 * date
 * numbers (digits after comma)
+
+## Syntax
+
+Coldefs
+
+```js
+grid.getCol('mycolumn')
+  .width(100)
+  .header('My Heading')
+  .doFoo('foo')
+  .doBar('bar');
+```
