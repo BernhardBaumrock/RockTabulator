@@ -24,8 +24,8 @@
 * smart filter
 * rowActions
 * tooltips
-* icons
-* buttons
+* icons (like addIcons)
+* buttons (like addIcons but with labels, maybe combined with icons)
 * batcher (https://processwire.com/talk/topic/15524-previewdiscussion-rockdatatables/?do=findComment&comment=167165)
 * action buttons (+batcher)
 * ProcessModule for Preview/Debugging
