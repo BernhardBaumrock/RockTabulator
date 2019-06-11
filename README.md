@@ -17,6 +17,7 @@
 * Support only Uikit Theme
 * ONE Endpoint for all operations --> RockFinder needs to return data at /admin/rockfinder/field_x AND this should also be used for executing actions (eg /field_x/addPage/?parent=123)
 * easy colDef JS syntax (see example below)
+* easy one-click editing of cells (eg paid today)
 
 ## Features
 
