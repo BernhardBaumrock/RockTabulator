@@ -56,3 +56,11 @@ grid.getCol('mycolumn')
   .doFoo('foo')
   .doBar('bar');
 ```
+
+## Sandbox
+
+Todo:
+
+* show prev/next links
+* renaming/create-new feature
+* add `edit on github` links

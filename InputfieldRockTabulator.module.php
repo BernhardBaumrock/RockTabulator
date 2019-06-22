@@ -11,9 +11,6 @@ class InputfieldRockTabulator extends InputfieldRockMarkup {
   public function init() {
     parent::init();
 
-    // add the class to the field
-    $this->addClass('RockTabulator');
-
     // load RockTabulator JavaScripts
     $this->config->scripts->add($this->toUrl(__DIR__ . '/RockTabulator.js'));
     $this->config->scripts->add($this->toUrl(__DIR__ . '/RockTabulatorGrid.js'));

@@ -11,25 +11,21 @@
  */
 class RockTabulatorData extends Wire {
 
-  /**
-   * Get data object
-   */
-  public function getData() {
-    $arr = [];
-    for($i=0; $i<10; $i++) {
-      $arr[] = (object)[
-        'foo' => 'bar'.$i,
-        'bar' => 'foo',
-      ];
-    }
-    return $arr;
+  public $data = null;
+
+  public function setDataArray($data) {
+    if(!is_array($data)) throw new WireException("Data must be an array");
+    $this->data = $data;
+  }
+
+  public function setRockFinder1($rf) {
+    $this->data = $rf->getObjects();
   }
 
   /**
    * Return JSON string of data
    */
   public function getJSON() {
-    $data = $this->getData();
-    return json_encode($data);
+    return json_encode($this->data);
   }
 }
