@@ -48,3 +48,5 @@ RockTabulator._('stringName'); // request global translation
 ```
 
 This example logs `grid._('foo')` to the console (open console to see the output).
+
+See also [http://tabulator.info/docs/4.2/localize](http://tabulator.info/docs/4.2/localize)
