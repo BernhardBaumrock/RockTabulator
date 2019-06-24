@@ -4,7 +4,7 @@ $(document).on('loaded', '.RockMarkup', function() {
     columns:[
       {title:"Name", field:"title", sorter:"string", width:200, headerFilter:true},
       {title:"Owner", field:"owner_title", sorter:"string", width:200, headerFilter:true},
-      {title:"Weight", field:"weight", sorter:"number", align:"right", bottomCalc:"sum"},
+      {title:"Weight", field:"weight", sorter:"number", align:"right", bottomCalc:"avg"},
     ],
   });
   var table = grid.table;
