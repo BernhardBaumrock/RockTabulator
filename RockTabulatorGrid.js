@@ -14,8 +14,11 @@ function RockTabulatorGrid(name) {
   this.table = null;
 }
 
+/**
+ * Get JSON from PHP and set all properties of the grid
+ */
 RockTabulatorGrid.prototype.setData = function(data) {
-  this.data = data;
+  for(prop in data) this[prop] = data[prop];
 }
 
 /**
@@ -45,4 +48,15 @@ RockTabulatorGrid.prototype.updateColumns = function(colDefs) {
 
   // merge new coldefs
   this.table.setColumns(current);
+}
+
+/**
+ * Get translation value
+ * 
+ * Using this function makes sure the grid does not break when a translation
+ * is not available. If a single translation does not exist for the current grid
+ * it looks in the global translations object
+ */
+RockTabulatorGrid.prototype._ = function(name) {
+  return this.lang[name] || RockTabulator._(name);
 }

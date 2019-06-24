@@ -4,6 +4,10 @@
 RockMarkup.log('RockTabulator.js');
 
 function RockTabulator() {
+
+  /**
+   * Array of all grids
+   */
   this.grids = [];
 };
 
@@ -36,6 +40,12 @@ RockTabulator.prototype.init = function(el, options) {
     paginationSizeSelector: true, //enable page size select element and generate list options
   }
 
+  // setup default language options
+  if(RockTabulator.langs) {
+    defaults.locale = true;
+    defaults.langs = RockTabulator.langs;
+  }
+
   // merge options and init tabulator
   var t = new Tabulator($container[0], $.extend(defaults, options));
   grid.table = t;
@@ -59,6 +69,15 @@ RockTabulator.prototype.getGrid = function(name) {
   for(var i=0; i<this.grids.length; i++) {
     if(this.grids[i].name == name) return this.grids[i];
   }
+}
+
+/**
+ * Return the translated string of requested property
+ */
+RockTabulator.prototype._ = function(name) {
+  if(typeof this.langs == 'undefined') return name;
+  var langs = this.langs[this.locale];
+  return langs[name] || '';
 }
 
 // init one global RockTabulator object
