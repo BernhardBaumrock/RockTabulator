@@ -1,6 +1,7 @@
 <?php namespace ProcessWire;
 return [
   'pagination' => [
+    "page_size" => __("Page Size"),
     "first" => __("First"), //text for the first page button
     "first_title" => __("First Page"), //tooltip text for the first page button
     "last" => __("Last"),
@@ -9,5 +10,8 @@ return [
     "prev_title" => __("Prev Page"),
     "next" => __("Next"),
     "next_title" => __("Next Page"),
+  ],
+  "headerFilters" => [
+    "default" => __("filter column..."), //default header filter placeholder text
   ],
 ];
