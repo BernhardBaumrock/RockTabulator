@@ -44,6 +44,7 @@
 * currency
 * date
 * numbers (digits after comma)
+* buttons
 
 ## Syntax
 
