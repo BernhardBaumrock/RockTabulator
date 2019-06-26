@@ -14,4 +14,8 @@ return [
   "headerFilters" => [
     "default" => __("filter column..."), //default header filter placeholder text
   ],
+  "ajax" => [
+    "loading" => __("Loading"), //ajax loader text
+    "error" => __("Error"), //ajax error text
+  ],
 ];

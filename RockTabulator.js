@@ -14,7 +14,7 @@ function RockTabulator() {
 /**
  * Init a grid when the dom element was loaded
  */
-RockTabulator.prototype.init = function(el, options) {
+RockTabulator.prototype.init = function(el, options, callback) {
   // make sure the element is a jquery object
   var $el = el;
   if(!el.jquery) $el = $(el);
@@ -46,11 +46,26 @@ RockTabulator.prototype.init = function(el, options) {
     defaults.langs = RockTabulator.langs;
   }
 
-  // merge options and init tabulator
-  var t = new Tabulator($container[0], $.extend(defaults, options));
-  grid.table = t;
+  // get ajax data
+  $.get('/tabulator').done(function(data) {
+    RockMarkup.log('done');
 
-  return grid;
+    console.log(data);
+    
+    // merge options and init tabulator
+    var t = new Tabulator($container[0], $.extend(defaults, options));
+    grid.table = t;
+
+    // data is ready, call the callback with the initialized grid
+    callback(grid);
+  }).fail(function() {
+    // get multilang ajax error message
+    RockMarkup.log('fail');
+    var msg = RockTabulator._('ajax')["error"];
+    $container.text("AJAX: " + msg);
+  }).always(function() {
+    RockMarkup.log('always');
+  });
 }
 
 /**

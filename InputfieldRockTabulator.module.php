@@ -31,7 +31,7 @@ class InputfieldRockTabulator extends InputfieldRockMarkup {
    */
   public function ___getContent() {
     $out = $this->loadData();
-    $out .= $this->files->render(__DIR__ . '/_content.php');
+    $out .= $this->files->render(__DIR__ . '/_content.php', ['that' => $this]);
     return $out;
   }
 
