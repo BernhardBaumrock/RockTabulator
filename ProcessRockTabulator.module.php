@@ -1,11 +1,11 @@
 <?php namespace ProcessWire;
 /**
- * RockTabulatorSandbox Module
+ * ProcessRockTabulator Module
  *
  * @author Bernhard Baumrock, 21.06.2019
  * @license Licensed under MIT
  */
-class RockTabulatorSandbox extends RockMarkupSandbox {
+class ProcessRockTabulator extends ProcessRockMarkup {
 
   public $exampleDir;
   

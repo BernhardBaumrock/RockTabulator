@@ -6,5 +6,5 @@ $info = [
   'author' => 'Bernhard Baumrock',
   'icon' => 'code',
   'requires' => ['FieldtypeRockTabulator'],
-  'installs' => ['RockTabulatorSandbox'],
+  'installs' => ['ProcessRockTabulator'],
 ];

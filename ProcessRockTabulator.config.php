@@ -1,11 +1,11 @@
 <?php namespace ProcessWire;
 /**
- * RockTabulatorSandbox Config
+ * ProcessRockTabulator Config
  *
  * @author Bernhard Baumrock, 21.06.2019
  * @license Licensed under MIT
  */
-class RockTabulatorSandboxConfig extends ModuleConfig {
+class ProcessRockTabulatorConfig extends ModuleConfig {
 
   public function __construct() {
     // sanitize directories
@@ -18,8 +18,8 @@ class RockTabulatorSandboxConfig extends ModuleConfig {
   public function getInputfields() {
     $inputfields = parent::getInputfields();
 
-    /** @var RockTabulatorSandbox $rm */
-    $rm = $this->modules->get('RockTabulatorSandbox');
+    /** @var ProcessRockTabulator $rm */
+    $rm = $this->modules->get('ProcessRockTabulator');
 
     $f = $this->modules->get('InputfieldTextarea');
     $f->name = 'dirs';
@@ -41,8 +41,8 @@ class RockTabulatorSandboxConfig extends ModuleConfig {
     $f = $event->object;
     if(!$f->value) return;
     
-    /** @var RockTabulatorSandbox $rm */
-    $rm = $this->modules->get('RockTabulatorSandbox');
+    /** @var ProcessRockTabulator $rm */
+    $rm = $this->modules->get('ProcessRockTabulator');
     $dirs = $rm->getDirs($f->value);
 
     $f->value = implode("\n", $dirs);
