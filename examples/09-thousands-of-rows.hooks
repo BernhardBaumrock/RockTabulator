@@ -1,6 +1,6 @@
 <?php namespace ProcessWire;
 /** @var WireFileTools $this */
-$this->addHookBefore("InputfieldForm(name=renderExample)::render", function(HookEvent $event) {
+$this->addHookBefore("InputfieldForm(name=example)::render", function(HookEvent $event) {
   $form = $event->object; /** @var InputfieldForm $form */
   $name = $this->input->get('name', 'text');
   if($name != '09-thousands-of-rows') return;
@@ -21,7 +21,7 @@ $this->addHookBefore("InputfieldForm(name=renderExample)::render", function(Hook
 });
 
 // add js to form markup
-$this->addHookAfter("InputfieldForm(name=renderExample)::render", function(HookEvent $event) {
+$this->addHookAfter("InputfieldForm(name=example)::render", function(HookEvent $event) {
   $form = $event->object; /** @var InputfieldForm $form */
   $name = $this->input->get('name', 'text');
   if($name != '09-thousands-of-rows') return;

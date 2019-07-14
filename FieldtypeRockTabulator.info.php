@@ -5,5 +5,6 @@ $info = [
   'version' => '0.0.1',
   'author' => 'Bernhard Baumrock',
   'icon' => 'code',
+  'requires' => ['RockMarkup'],
   'installs' => ['InputfieldRockTabulator'],
 ];
