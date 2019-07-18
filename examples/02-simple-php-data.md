@@ -1,1 +1,0 @@
-This example shows how to show a simple grid and get data from a single PHP file. All the JavaScript is handled by the default RockTabulator JavaScript implementation.

@@ -47,6 +47,57 @@ class RockTabulatorData extends Wire {
   }
 
   /**
+   * Set data property
+   * @param mixed $data
+   * @return void
+   */
+  public function setData($data) {
+    $type = $this->getDataType($data);
+    switch($type) {
+      
+      // regular php array can be set directly
+      case 'array':
+        $this->data = $data;
+        break;
+
+      // sql data
+      case 'sql':
+        $query = $this->database->prepare($data);
+        $query->execute();
+        $this->data = $query->fetchAll(\PDO::FETCH_OBJ);
+        break;
+
+      default:
+        throw new WireException("Invalid data type!");
+    }
+  }
+
+  /**
+   * Get type of provided data
+   * @param mixed $data
+   * @return string
+   */
+  public function getDataType($data) {
+    if(is_array($data)) return 'array';
+    if($data instanceof RockFinder) return 'RockFinder';
+    if($data instanceof RockFinder2) return 'RockFinder2';
+    if(is_string($data)) {
+      // is it an sql select statement?
+      $query = strtolower($data);
+      if(strpos($query, "select") === 0) return 'sql';
+    }
+
+    return null;
+  }
+  
+  /**
+   * 
+   */
+  public function setDataSql($query) {
+    
+  }
+
+  /**
    * Add a translation to the grid's translations array
    * 
    * You can either provide a single property or an array of key-value-pairs.
@@ -67,12 +118,23 @@ class RockTabulatorData extends Wire {
   }
 
   /**
+   * Get json object
+   */
+  public function getJsonObject() {
+    return (object)[
+      'data' => $this->data,
+      'lang' => $this->lang,
+    ];
+  }
+
+  /**
    * Return JSON string of data
    */
   public function getJSON() {
-    return json_encode((object)[
-      'data' => $this->data,
-      'lang' => $this->lang,
-    ]);
+    return json_encode($this->getJsonObject());
+  }
+
+  public function __debugInfo() {
+    return (array)$this->getJsonObject();
   }
 }

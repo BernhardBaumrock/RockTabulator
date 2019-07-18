@@ -1,0 +1,3 @@
+This example shows how to show a simple grid and get data from a single PHP file. All the JavaScript is handled by the default RockTabulator JavaScript implementation.
+
+Whenever a RockTabulator grid gets data from PHP the data is loaded via a separate AJAX request and returned as gzipped json object. This object does not only contain the grid data, it can also contain additional data that is helpful when working with interactive grids. For example you can add translation strings or options from options fields (see the dedicated example for that).

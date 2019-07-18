@@ -1,0 +1,1 @@
+This example shows how to use the built in `RockTabulator.init()` method. This makes sure that all the PW and RockTabulator related features are working properly (like defining data via PHP, setting translation strings etc).

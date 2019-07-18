@@ -9,63 +9,126 @@ function RockTabulator() {
    * Array of all grids
    */
   this.grids = [];
+
+  /**
+   * AJAX endpoint url
+   */
+  this.url = '/rocktabulator/';
 };
 
 /**
  * Init a grid when the dom element was loaded
  */
-RockTabulator.prototype.init = function(el, options, callback) {
-  // make sure the element is a jquery object
+RockTabulator.prototype.init = function(el, options) {
+  // get jquery and dom object of element
   var $el = el;
   if(!el.jquery) $el = $(el);
   el = $el[0];
+
+  // replace setup instructions with loading spinner
+  $el.find('.RockTabulator').html('<i class="fa fa-spin fa-spinner"></i>');
 
   // get the tabulator container
   var name = el.id.replace('Inputfield_', '');
   var $container = $el.find('div.RockTabulator');
 
-  // save it to the grid
-  var grid = RockTabulator.getGrid(name);
-
   // set options
   var options = options || {};
 
+  // save it to the grid
+  var grid = RockTabulator.addGrid(name);
+
+  // add properties to grid
+  grid.options = options;
+
+  // if data was set via JS we add it to the grid object
+  // this property is monitored via tabulator reactiveData feature
+  grid.data = options.data;
+
   // set defaults
   var defaults = {
+    // Set data of the tabulator
+    // We enable reactive data so that tabulator automatically updates whenever
+    // the source data changes.
+    reactiveData: true,
     data: grid.data,
-    reactiveData: true, //enable reactive data
+    
+    // set columns from datasource
     autoColumns: true,
+
+    // pagination
     pagination: "local",
     paginationSize: 10,
-    paginationSizeSelector: true, //enable page size select element and generate list options
+    paginationSizeSelector: true,
+
+    // layout
+    layout:"fitColumns",
   }
+  
+  // merge tabulator config options
+  grid.config = $.extend(defaults, options.config);
 
-  // setup default language options
-  if(RockTabulator.langs) {
-    defaults.locale = true;
-    defaults.langs = RockTabulator.langs;
-  }
+  // create tabulator
+  this.createTabulator($container[0], grid);
+}
 
-  // get ajax data
-  $.get('/tabulator').done(function(data) {
-    RockMarkup.log('done');
+RockTabulator.prototype.createTabulator = function(el, grid) {
+  console.log(grid);
+  var data = grid.data;
 
-    console.log(data);
-    
-    // merge options and init tabulator
-    var t = new Tabulator($container[0], $.extend(defaults, options));
+  // save datatype to grid object
+  // this is needed later for disabling ajax on JS-only grids
+  grid.dataType = typeof data;
+
+  // init the table vars
+  var t;
+  var afterInit = grid.options.afterInit || function() {};
+
+  // init tabulator and call callback
+  var init = function() {
+    t = new Tabulator(el, grid.config);
     grid.table = t;
+    afterInit(t, grid);
+  }
 
-    // data is ready, call the callback with the initialized grid
-    callback(grid);
-  }).fail(function() {
-    // get multilang ajax error message
-    RockMarkup.log('fail');
-    var msg = RockTabulator._('ajax')["error"];
-    $container.text("AJAX: " + msg);
-  }).always(function() {
-    RockMarkup.log('always');
-  });
+  if(grid.dataType == 'object') {
+    grid.dataType = 'js';
+    init();
+  }
+  else if(grid.dataType == 'string') {
+    grid.dataType = 'external';
+    grid.config.data = [];
+
+    // external json url
+    // todo
+  }
+  else {
+    grid.dataType = 'ajax';
+
+    // by default we send an internal ajax post to get data from php
+    $.post(RockTabulator.url, {name: grid.name})
+      .done(function(result) {
+        // check type json
+        if(typeof result != 'object') {
+          $(el).html("Wrong response type (JSON required)");
+          return;
+        }
+
+        // check for error message
+        if(result.error) {
+          $(el).html(result.error);
+          return;
+        }
+
+        // init grid
+        grid.data = result.data;
+        grid.config.data = grid.data;
+        init();
+      })
+      .error(function(data) {
+        $(el).html("AJAX ERROR");
+      });
+  }
 }
 
 /**
@@ -73,6 +136,12 @@ RockTabulator.prototype.init = function(el, options, callback) {
  */
 RockTabulator.prototype.addGrid = function(name) {
   var grid = new RockTabulatorGrid(name);
+
+  // By default the data property is NULL
+  // This means an AJAX request will be fired to get data from the PHP file
+  // having the same name as the grid.
+  grid.data = null;
+
   this.grids.push(grid);
   return grid;
 };
@@ -97,3 +166,23 @@ RockTabulator.prototype._ = function(name) {
 
 // init one global RockTabulator object
 var RockTabulator = new RockTabulator();
+
+// fix some display issues
+$(document).ready(function() {
+  // redraw all tabulators once
+  // without this redraw inputfields with JS data and collapsed state open have a glitch
+  $.each(RockTabulator.grids, function(i, grid) {
+    if(!grid.table) return;
+    grid.table.redraw();
+  });
+});
+
+// Sandbox AJAX requests
+$(document).on('click', '#tabulator_ajax_post', function() {
+  var name = $(this).data('name');
+  
+  // send ajax post
+  $.post(RockTabulator.url, {name}, function( data ) {
+    console.log(data);
+  });
+});

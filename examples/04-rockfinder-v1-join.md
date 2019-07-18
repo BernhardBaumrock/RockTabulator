@@ -1,3 +1,0 @@
-This example shows how two RockFinders can be joined. It lists all cats and dogs and their owners. This is a single page reference because this is the simpler join. Page reference fields that hold multiple page references can also be joined but need custom SQL (group by, concat, etc).
-
-The grid shows two unnecessary columns (owner and owner_id). Both fields are necessary for the join and could be hidden via JS (see next example).

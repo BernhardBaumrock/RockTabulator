@@ -1,0 +1,1 @@
+This example shows just that the sandbox is working and that the field will show a hint that you have to setup some JS for it to work.

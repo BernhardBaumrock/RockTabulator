@@ -1,0 +1,1 @@
+This example shows a basic JS-only Tabulator that is taken from http://tabulator.info/docs/4.2/quickstart

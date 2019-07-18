@@ -1,4 +1,4 @@
-$(document).on('loaded', '.RockMarkup', function() {  
+$(document).on('loaded', '.RockMarkup[data-name=rt02_first_tabulator]', function() {  
   //define some sample data
   var tabledata = [
     {id:1, name:"Oli Bob", age:"12", col:"red", dob:""},
@@ -8,9 +8,11 @@ $(document).on('loaded', '.RockMarkup', function() {
     {id:5, name:"Margret Marmajuke", age:"16", col:"yellow", dob:"31/01/1999"},
   ];
 
-  //create Tabulator on DOM element with id "example-table"
-  var table = new Tabulator("#Inputfield_01-hello-world .RockTabulator", {
-    height:205, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+  //create Tabulator on DOM element with class .RockTabulator
+  var table = new Tabulator($(this).find('.RockTabulator')[0], {
+    // set height of table (in CSS or here), this enables the Virtual DOM and
+    // improves render speed dramatically (can be any valid css height value)
+    height:205,
     data:tabledata, //assign data to table
     layout:"fitColumns", //fit columns to width of table (optional)
     columns:[ //Define Table Columns
@@ -23,5 +25,4 @@ $(document).on('loaded', '.RockMarkup', function() {
       alert("Row " + row.getData().id + " Clicked!!!!");
     },
   });
-
 });
