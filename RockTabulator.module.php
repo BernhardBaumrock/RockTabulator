@@ -23,6 +23,28 @@ class RockTabulator extends RockMarkup {
       ],
     ];
   }
+  static protected $defaults = array(
+    'langs' => "default=en-en\nde=de-de",
+  );
+  public function getModuleConfigInputfields(array $data) {
+    $inputfields = parent::getModuleConfigInputfields($data);
+    $data = array_merge(parent::$defaults, self::$defaults, $data);
+
+    $f = $this->modules->get('InputfieldTextarea');
+    $f->name = 'langs';
+    $f->label = $this->_('Language Mappings');
+    $f->description = $this->_('List all languages of your system with their mapped locale for RockTabulator here.');
+    $f->notes = $this->_('One by line, eg de=de-de (where de is the language name and de-de is the tabulator locale');
+    $f->value = $data['langs'];
+    $inputfields->add($f);
+
+    return $inputfields;
+  }
+  public function __construct() {
+    // populate defaults, which will get replaced with actual
+    // configured values before the init/ready methods are called
+    $this->setArray(array_merge(parent::$defaults, self::$defaults));
+  }
 
   /**
    * Init module
@@ -33,12 +55,52 @@ class RockTabulator extends RockMarkup {
     // intercept 404 page for returning ajax data
     require_once('RockTabulatorData.php');
     $this->addHookBefore('ProcessPageView::pageNotFound', $this, 'handleAjax');
+
+    // load locales
+    $this->addHookBefore("loadGlobalConfig", $this, 'loadLocales');
+  }
+
+  /**
+   * Load locales to config object
+   */
+  public function loadLocales($event) {
+    $locale = $this->getLocale();
+    if(!$locale) return;
+
+    $data = $this->wire->files->render(__DIR__ . '/_langs.php');
+    $this->conf->set('locale', $locale);
+    $this->conf->set('langs', [$locale => $data]);
+  }
+  
+  /**
+   * Get tabulator locale string of current pw user's language
+   *
+   * @return string
+   */
+  public function getLocale() {
+    foreach(explode("\n", $this->langs) as $item) {
+      $item = explode("=", $item);
+      $name = $item[0];
+      $locale = $item[1];
+      if($name == $this->user->language->name) return $locale;
+    }
+  }
+
+  /**
+   * Set global JS configuration object
+   * 
+   */
+  public function ___setGlobalConfig($data) {
+    $this->wire->config->js('RockTabulator', $data);
   }
 
   /**
    * Handle AJAX request
    */
   public function handleAjax($event) {
+    if(!$this->config->ajax) return;
+
+    // check name property
     $name = $this->input->post('name', 'string');
     if(!$name) return;
 
@@ -46,6 +108,11 @@ class RockTabulator extends RockMarkup {
     if($url != '/rocktabulator/') return;
 
     // ########## GET DATA ##########
+    $langID = $langID = $this->input->post('lang', 'int');
+    if($langID) {
+      $lang = $this->languages->get($langID);
+      $this->user->language = $lang;
+    }
     $data = $this->getTabulatorData($name);
 
     // do not execute the 404, return json instead

@@ -1,5 +1,6 @@
 <?php namespace ProcessWire;
 return [
+  // tabulator translations
   'pagination' => [
     "page_size" => __("Page Size"),
     "first" => __("First"), //text for the first page button
@@ -14,8 +15,6 @@ return [
   "headerFilters" => [
     "default" => __("filter column..."), //default header filter placeholder text
   ],
-  "ajax" => [
-    "loading" => __("Loading"), //ajax loader text
-    "error" => __("Error"), //ajax error text
-  ],
+
+  // rocktabulator translations
 ];

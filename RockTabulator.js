@@ -14,6 +14,9 @@ function RockTabulator() {
    * AJAX endpoint url
    */
   this.url = '/rocktabulator/';
+
+  // global config
+  this.conf = ProcessWire.config.RockTabulator;
 };
 
 /**
@@ -63,6 +66,10 @@ RockTabulator.prototype.init = function(el, options) {
 
     // layout
     layout:"fitColumns",
+
+    // locale
+    locale: this.conf.locale,
+    langs: this.conf.langs,
   }
   
   // merge tabulator config options
@@ -73,8 +80,8 @@ RockTabulator.prototype.init = function(el, options) {
 }
 
 RockTabulator.prototype.createTabulator = function(el, grid) {
-  console.log(grid);
   var data = grid.data;
+  var conf = this.conf;
 
   // save datatype to grid object
   // this is needed later for disabling ajax on JS-only grids
@@ -86,9 +93,10 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
 
   // init tabulator and call callback
   var init = function() {
-    t = new Tabulator(el, grid.config);
-    grid.table = t;
-    afterInit(t, grid);
+    table = new Tabulator(el, grid.config);
+    grid.table = table;
+
+    afterInit(table, grid);
   }
 
   if(grid.dataType == 'object') {
@@ -106,8 +114,9 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
     grid.dataType = 'ajax';
 
     // by default we send an internal ajax post to get data from php
-    $.post(RockTabulator.url, {name: grid.name})
-      .done(function(result) {
+    this.post({
+      name: grid.name,
+      done: function(result) {
         // check type json
         if(typeof result != 'object') {
           $(el).html("Wrong response type (JSON required)");
@@ -124,11 +133,25 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
         grid.data = result.data;
         grid.config.data = grid.data;
         init();
-      })
-      .error(function(data) {
+      },
+      error: function(data) {
         $(el).html("AJAX ERROR");
-      });
+      },
+    });
   }
+}
+
+/**
+ * Send AJAX request to get data
+ */
+RockTabulator.prototype.post = function(obj) {
+  var doneCallback = obj.done || function(){};
+  var errorCallback = obj.error || function(){};
+  $.post(RockTabulator.url, {
+    name: obj.name,
+    lang: ProcessWire.config.LanguageSupport.language.id,
+  }).done(doneCallback)
+    .error(errorCallback);
 }
 
 /**
@@ -182,7 +205,13 @@ $(document).on('click', '#tabulator_ajax_post', function() {
   var name = $(this).data('name');
   
   // send ajax post
-  $.post(RockTabulator.url, {name}, function( data ) {
-    console.log(data);
+  RockTabulator.post({
+    name,
+    done: function(data) {
+      console.log(data);
+    },
+    error: function(data) {
+      console.error(data);
+    },
   });
 });
