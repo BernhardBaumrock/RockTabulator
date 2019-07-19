@@ -147,9 +147,17 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
 RockTabulator.prototype.post = function(obj) {
   var doneCallback = obj.done || function(){};
   var errorCallback = obj.error || function(){};
+  
+  // prepare lang
+  var lang = null;
+  if(ProcessWire.config.LanguageSupport) {
+    lang = ProcessWire.config.LanguageSupport.language.id;
+  }
+
+  // send post request
   $.post(RockTabulator.url, {
     name: obj.name,
-    lang: ProcessWire.config.LanguageSupport.language.id,
+    lang: lang,
   }).done(doneCallback)
     .error(errorCallback);
 }

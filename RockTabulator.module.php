@@ -24,7 +24,7 @@ class RockTabulator extends RockMarkup {
     ];
   }
   static protected $defaults = array(
-    'langs' => "default=en-en\nde=de-de",
+    'langs' => "default=en-gb\nde=de-de",
   );
   public function getModuleConfigInputfields(array $data) {
     $inputfields = parent::getModuleConfigInputfields($data);
@@ -82,6 +82,7 @@ class RockTabulator extends RockMarkup {
       $item = explode("=", $item);
       $name = $item[0];
       $locale = $item[1];
+      if(!$this->user->language) return;
       if($name == $this->user->language->name) return $locale;
     }
   }
