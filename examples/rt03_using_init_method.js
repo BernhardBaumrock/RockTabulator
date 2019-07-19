@@ -1,5 +1,5 @@
 $(document).on('loaded', '.RockMarkup[data-name=rt03_using_init_method]', function() {
- var grid = RockTabulator.init(this, {
+ RockTabulator.init(this, {
     // set data array via JS
     data: [
       {foo:'bar1', bar:'foo1'},
