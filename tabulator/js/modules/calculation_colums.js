@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.2.7 (c) Oliver Folkerd */
+/* Tabulator v4.3.0 (c) Oliver Folkerd */
 
 var ColumnCalcs = function ColumnCalcs(table) {
 	this.table = table; //hold Tabulator object
@@ -144,6 +144,10 @@ ColumnCalcs.prototype.recalc = function (rows) {
 		data = this.rowsToData(rows);
 
 		if (this.topInitialized) {
+			if (this.topRow) {
+				this.topRow.deleteCells();
+			}
+
 			row = this.generateRow("top", this.rowsToData(rows));
 			this.topRow = row;
 			while (this.topElement.firstChild) {
@@ -153,6 +157,10 @@ ColumnCalcs.prototype.recalc = function (rows) {
 		}
 
 		if (this.botInitialized) {
+			if (this.botRow) {
+				this.botRow.deleteCells();
+			}
+
 			row = this.generateRow("bottom", this.rowsToData(rows));
 			this.botRow = row;
 			while (this.botElement.firstChild) {
@@ -298,7 +306,7 @@ ColumnCalcs.prototype.generateRowData = function (pos, data) {
 			});
 
 			paramKey = type + "Params";
-			params = typeof column.modules.columnCalcs[paramKey] === "function" ? column.modules.columnCalcs[paramKey](value, data) : column.modules.columnCalcs[paramKey];
+			params = typeof column.modules.columnCalcs[paramKey] === "function" ? column.modules.columnCalcs[paramKey](values, data) : column.modules.columnCalcs[paramKey];
 
 			column.setFieldValue(rowData, column.modules.columnCalcs[type](values, data, params));
 		}

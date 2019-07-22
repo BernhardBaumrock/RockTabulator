@@ -1,4 +1,4 @@
-/* Tabulator v4.2.7 (c) Oliver Folkerd */
+/* Tabulator v4.3.0 (c) Oliver Folkerd */
 
 var Page = function Page(table) {
 
@@ -622,6 +622,8 @@ Page.prototype.paginationDataSentNames = {
 	"sorters": "sorters",
 	// "sort_dir":"sort_dir",
 	"filters": "filters"
+	// "filter_value":"filter_value",
+	// "filter_type":"filter_type",
 };
 
 //set the property names for pagination responses

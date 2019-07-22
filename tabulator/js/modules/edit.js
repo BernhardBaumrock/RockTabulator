@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.2.7 (c) Oliver Folkerd */
+/* Tabulator v4.3.0 (c) Oliver Folkerd */
 
 var Edit = function Edit(table) {
 	this.table = table; //hold Tabulator object
@@ -302,7 +302,7 @@ Edit.prototype.editors = {
 		var cellValue = cell.getValue(),
 		    input = document.createElement("input");
 
-		input.setAttribute("type", "text");
+		input.setAttribute("type", editorParams.search ? "search" : "text");
 
 		input.style.padding = "4px";
 		input.style.width = "100%";
@@ -347,7 +347,7 @@ Edit.prototype.editors = {
 	textarea: function textarea(cell, onRendered, success, cancel, editorParams) {
 		var self = this,
 		    cellValue = cell.getValue(),
-		    value = String(cellValue !== null && cellValue !== "undefined" ? cellValue : ""),
+		    value = String(cellValue !== null && typeof cellValue !== "undefined" ? cellValue : ""),
 		    count = (value.match(/(?:\r\n|\r|\n)/g) || []).length + 1,
 		    input = document.createElement("textarea"),
 		    scrollHeight = 0;
@@ -559,6 +559,8 @@ Edit.prototype.editors = {
 		    displayItems = [],
 		    currentItem = {},
 		    blurable = true;
+
+		this.table.rowManager.element.addEventListener("scroll", cancelItem);
 
 		if (Array.isArray(editorParams) || !Array.isArray(editorParams) && (typeof editorParams === "undefined" ? "undefined" : _typeof(editorParams)) === "object" && !editorParams.values) {
 			console.warn("DEPRECATION WANRING - values for the select editor must now be passed into the values property of the editorParams object, not as the editorParams object");
@@ -773,6 +775,12 @@ Edit.prototype.editors = {
 			if (listEl.parentNode) {
 				listEl.parentNode.removeChild(listEl);
 			}
+
+			removeScrollListener();
+		}
+
+		function removeScrollListener() {
+			self.table.rowManager.element.removeEventListener("scroll", cancelItem);
 		}
 
 		//style input
@@ -781,7 +789,8 @@ Edit.prototype.editors = {
 		input.style.padding = "4px";
 		input.style.width = "100%";
 		input.style.boxSizing = "border-box";
-		input.readOnly = true;
+		input.style.cursor = "default";
+		input.readOnly = this.currentCell != false;
 
 		input.value = typeof initialValue !== "undefined" || initialValue === null ? initialValue : "";
 
@@ -880,6 +889,8 @@ Edit.prototype.editors = {
 		    values = [],
 		    currentItem = {},
 		    blurable = true;
+
+		this.table.rowManager.element.addEventListener("scroll", cancelItem);
 
 		function getUniqueColumnValues() {
 			var output = {},
@@ -1117,6 +1128,12 @@ Edit.prototype.editors = {
 			if (listEl.parentNode) {
 				listEl.parentNode.removeChild(listEl);
 			}
+
+			removeScrollListener();
+		}
+
+		function removeScrollListener() {
+			self.table.rowManager.element.removeEventListener("scroll", cancelItem);
 		}
 
 		//style input

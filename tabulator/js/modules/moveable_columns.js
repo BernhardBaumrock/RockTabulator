@@ -1,4 +1,4 @@
-/* Tabulator v4.2.7 (c) Oliver Folkerd */
+/* Tabulator v4.3.0 (c) Oliver Folkerd */
 
 var MoveColumns = function MoveColumns(table) {
 	this.table = table; //hold Tabulator object
@@ -104,7 +104,7 @@ MoveColumns.prototype.bindTouchEvents = function (column) {
 
 			self.startMove(e, column);
 		}, self.checkPeriod);
-	});
+	}, { passive: true });
 
 	colEl.addEventListener("touchmove", function (e) {
 		var halfCol, diff, moveToCol;
@@ -150,7 +150,7 @@ MoveColumns.prototype.bindTouchEvents = function (column) {
 				prevColWidth = prevCol ? prevCol.getWidth() / 2 : 0;
 			}
 		}
-	});
+	}, { passive: true });
 
 	colEl.addEventListener("touchend", function (e) {
 		if (self.checkTimeout) {
