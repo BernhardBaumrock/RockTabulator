@@ -49,6 +49,7 @@ class RockTabulatorData extends Wire {
         $this->data = $data;
         break;
 
+      // RockFinder v1
       case 'RockFinder':
         $this->data = $data->getObjects();
         break;
