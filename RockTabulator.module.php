@@ -145,7 +145,9 @@ class RockTabulator extends RockMarkup {
     if(!$name) return;
 
     $file = $this->getFile($name);
-    $data = $this->files->render($file->path);
+    $data = $this->files->render($file->path, [], [
+      'allowedPaths' => [$file->dir],
+    ]);
 
     // ########## CHECK ACCESS ##########
     // by default only superusers have access
