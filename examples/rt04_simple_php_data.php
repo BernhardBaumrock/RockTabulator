@@ -9,6 +9,6 @@ for($i=0; $i<100000; $i++) {
     'bar' => 'foo',
   ];
 }
-$data->setDataArray($arr);
+$data->setData($arr);
 
 return $data;

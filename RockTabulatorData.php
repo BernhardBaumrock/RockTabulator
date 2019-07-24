@@ -26,17 +26,6 @@ class RockTabulatorData extends Wire {
   public $lang = [];
 
   /**
-   * Set data from a regular php array
-   *
-   * @param array $data
-   * @return void
-   */
-  public function setDataArray($data) {
-    if(!is_array($data)) throw new WireException("Data must be an array");
-    $this->data = $data;
-  }
-
-  /**
    * Set data from a RockFinder v1
    *
    * @param RockFinder $rf

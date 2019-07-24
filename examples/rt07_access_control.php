@@ -9,7 +9,7 @@ for($i=0; $i<10; $i++) {
     'bar' => 'foo',
   ];
 }
-$data->setDataArray($arr);
+$data->setData($arr);
 
 // set access control for this data object
 $data->access = function() {

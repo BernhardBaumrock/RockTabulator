@@ -9,6 +9,6 @@ for($i=0; $i<10; $i++) {
     'bar' => __('foo en')." ".($i*2),
   ];
 }
-$data->setDataArray($arr);
+$data->setData($arr);
 
 return $data;
