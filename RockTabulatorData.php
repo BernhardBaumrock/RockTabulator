@@ -49,6 +49,10 @@ class RockTabulatorData extends Wire {
         $this->data = $data;
         break;
 
+      case 'RockFinder':
+        $this->data = $data->getObjects();
+        break;
+
       // sql data
       case 'sql':
         $query = $this->database->prepare($data);
