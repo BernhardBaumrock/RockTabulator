@@ -26,6 +26,13 @@ RockTabulator.prototype.init = function(el, options) {
   // get jquery and dom object of element
   var $el = el;
   if(!el.jquery) $el = $(el);
+
+  // make sure it is the inputfield li element
+  $el = $el.closest('li.Inputfield');
+  if(!$el.length) {
+    alert('RockTabulator must be inside of an Inputfield');
+    return;
+  }
   el = $el[0];
 
   // replace setup instructions with loading spinner
@@ -77,6 +84,8 @@ RockTabulator.prototype.init = function(el, options) {
 
   // create tabulator
   this.createTabulator($container[0], grid);
+
+  return grid;
 }
 
 RockTabulator.prototype.createTabulator = function(el, grid) {

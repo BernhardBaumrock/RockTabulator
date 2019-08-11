@@ -114,7 +114,13 @@ class RockTabulator extends RockMarkup {
       $lang = $this->languages->get($langID);
       $this->user->language = $lang;
     }
-    $data = $this->getTabulatorData($name);
+
+    // try to get data
+    try {
+      $data = $this->getTabulatorData($name);
+    } catch (\Throwable $th) {
+      $this->die($th->getMessage());
+    }
 
     // do not execute the 404, return json instead
     header("Content-type: application/json");
@@ -136,6 +142,14 @@ class RockTabulator extends RockMarkup {
   }
 
   /**
+   * Die and send message as JSON
+   */
+  public function die($msg) {
+    header("Content-type: application/json");
+    die(json_encode($this->err($msg)));
+  }
+
+  /**
    * Get data for given tabulator
    * @param string $name
    * @return mixed
@@ -148,6 +162,7 @@ class RockTabulator extends RockMarkup {
     $data = $this->files->render($file->path, [], [
       'allowedPaths' => [$file->dir],
     ]);
+    if(!$data) throw new WireException("Error retrieving data for this tabulator");
 
     // ########## CHECK ACCESS ##########
     // by default only superusers have access

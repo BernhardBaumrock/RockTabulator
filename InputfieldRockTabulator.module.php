@@ -28,6 +28,7 @@ class InputfieldRockTabulator extends InputfieldRockMarkup {
   public function renderReady(Inputfield $parent = null, $renderValueMode = false) {
     // load RockTabulator JavaScripts
     $this->config->scripts->add($this->rm->toUrl(__DIR__ . '/RockTabulator.js'));
+    $this->config->styles->add($this->rm->toUrl(__DIR__ . '/RockTabulator.css'));
     $this->config->scripts->add($this->rm->toUrl(__DIR__ . '/RockTabulatorGrid.js'));
 
     // load tabulator
@@ -45,11 +46,16 @@ class InputfieldRockTabulator extends InputfieldRockMarkup {
    * Render Inputfield Content
    */
   public function ___getContent() {
-    $name = $this->name;
-    $url = $this->config->urls->admin . "setup/rocktabulator/?name=".$name;
-    $sandboxlink = "<a href='$url'>$url</a>";
-    return $this->files->render(__DIR__ . '/templates/default', [
-      'sandboxlink' => $sandboxlink,
+    return $this->tpl('default');
+  }
+
+  /**
+   * Hookable template render function
+   * @return string
+   */
+  public function ___tpl($file) {
+    return $this->wire->files->render(__DIR__.'/templates/'.$file, [
+      'tabulator' => $this,
     ]);
   }
 }
