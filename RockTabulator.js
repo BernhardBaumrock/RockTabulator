@@ -16,7 +16,7 @@ function RockTabulator() {
   this.url = '/rocktabulator/';
 
   // global config
-  this.conf = ProcessWire.config.RockTabulator || {};
+  this.conf = ProcessWire.config.RockTabulator;
 };
 
 /**
@@ -75,8 +75,8 @@ RockTabulator.prototype.init = function(el, options) {
     layout:"fitColumns",
 
     // locale
-    locale: this.conf.locale || {},
-    langs: this.conf.langs || {},
+    locale: this.conf.locale,
+    langs: this.conf.langs,
   }
   
   // merge tabulator config options

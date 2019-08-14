@@ -6,7 +6,6 @@
  * @license Licensed under MIT
  */
 class RockTabulator extends RockMarkup2 {
-
   public static function getModuleInfo() {
     return [
       'title' => 'RockTabulator Main Module',
@@ -40,6 +39,13 @@ class RockTabulator extends RockMarkup2 {
 
     return $inputfields;
   }
+
+  /**
+   * RockTabulator JS config
+   * @var WireArray
+   */
+  public $conf;
+
   public function __construct() {
     // populate defaults, which will get replaced with actual
     // configured values before the init/ready methods are called
@@ -55,9 +61,14 @@ class RockTabulator extends RockMarkup2 {
     // intercept 404 page for returning ajax data
     require_once('RockTabulatorData.php');
     $this->addHookBefore('ProcessPageView::pageNotFound', $this, 'handleAjax');
+  }
 
+  
+  public function ready() {
     // load locales
-    $this->addHookBefore("loadGlobalConfig", $this, 'loadLocales');
+    $this->conf = $this->wire(new WireArray);
+    $this->addHookBefore("setGlobalConfig", $this, 'loadLocales');
+    $this->setGlobalConfig();
   }
 
   /**
@@ -91,7 +102,8 @@ class RockTabulator extends RockMarkup2 {
    * Set global JS configuration object
    * 
    */
-  public function ___setGlobalConfig($data) {
+  public function ___setGlobalConfig() {
+    $data = $this->conf->getArray();
     $this->wire->config->js('RockTabulator', $data);
   }
 
