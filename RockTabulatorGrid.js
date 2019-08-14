@@ -1,7 +1,7 @@
 /**
  * Main RockTabulator class
  */
-RockMarkup.log('RockTabulatorGrid.js');
+RockMarkup2.log('RockTabulatorGrid.js');
 
 function RockTabulatorGrid(name) {
   // name of the grid

@@ -1,4 +1,4 @@
-$(document).on('loaded', '.RockMarkup[data-name=rt03_using_init_method]', function() {
+$(document).on('loaded', '.RockMarkup2[data-name=rt03_using_init_method]', function() {
  RockTabulator.init(this, {
     // set data array via JS
     data: [

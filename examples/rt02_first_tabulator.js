@@ -1,4 +1,4 @@
-$(document).on('loaded', '.RockMarkup[data-name=rt02_first_tabulator]', function() {  
+$(document).on('loaded', '.RockMarkup2[data-name=rt02_first_tabulator]', function() {  
   //define some sample data
   var tabledata = [
     {id:1, name:"Oli Bob", age:"12", col:"red", dob:""},

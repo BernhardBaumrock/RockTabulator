@@ -6,7 +6,7 @@
  * @license Licensed under MIT
  * @link https://www.baumrock.com
  */
-class FieldtypeRockTabulator extends FieldtypeRockMarkup {
+class FieldtypeRockTabulator extends FieldtypeRockMarkup2 {
 
   public static function getModuleInfo() {
     return [

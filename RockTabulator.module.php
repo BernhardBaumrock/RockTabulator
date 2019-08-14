@@ -5,7 +5,7 @@
  * @author Bernhard Baumrock, 15.07.2019
  * @license Licensed under MIT
  */
-class RockTabulator extends RockMarkup {
+class RockTabulator extends RockMarkup2 {
 
   public static function getModuleInfo() {
     return [
@@ -15,7 +15,7 @@ class RockTabulator extends RockMarkup {
       'singular' => true,
       'autoload' => true,
       'icon' => 'bolt',
-      'requires' => ['RockMarkup'],
+      'requires' => ['RockMarkup2'],
       'installs' => [
         'FieldtypeRockTabulator',
         'InputfieldRockTabulator',

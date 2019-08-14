@@ -1,7 +1,7 @@
 /**
  * Main RockTabulator class
  */
-RockMarkup.log('RockTabulator.js');
+RockMarkup2.log('RockTabulator.js');
 
 function RockTabulator() {
 

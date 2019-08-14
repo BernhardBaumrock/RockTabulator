@@ -5,7 +5,7 @@
  * @author Bernhard Baumrock, 15.07.2019
  * @license Licensed under MIT
  */
-class ProcessRockTabulator extends ProcessRockMarkup {
+class ProcessRockTabulator extends ProcessRockMarkup2 {
 
   public static function getModuleInfo() {
     return [
@@ -30,7 +30,7 @@ class ProcessRockTabulator extends ProcessRockMarkup {
     parent::init();
 
     // modify code markup for PHP data file
-    $this->addHookAfter("RockMarkup::getCodeMarkup", $this, 'hookCodeMarkup');
+    $this->addHookAfter("RockMarkup2::getCodeMarkup", $this, 'hookCodeMarkup');
   }
 
   /**

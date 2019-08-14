@@ -7,7 +7,7 @@
  * @link https://www.baumrock.com
  */
 require_once('RockTabulatorData.php');
-class InputfieldRockTabulator extends InputfieldRockMarkup {
+class InputfieldRockTabulator extends InputfieldRockMarkup2 {
 
   public static function getModuleInfo() {
     return [
