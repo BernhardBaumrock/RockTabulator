@@ -120,9 +120,10 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
     // todo
   }
   else {
+    // no data was set
+    // we get the data via an internal AJAX request which will execute the
+    // corresponding PHP data file (tabulatorname.php)
     grid.dataType = 'ajax';
-
-    // by default we send an internal ajax post to get data from php
     this.post({
       name: grid.name,
       done: function(result) {
@@ -138,10 +139,25 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
           return;
         }
 
-        // init grid
-        grid.data = result.data;
-        grid.config.data = grid.data;
-        init();
+        // is this a rockfinder2 data object?
+        if(result.type == 'RockFinder2') {
+          // grid.data will hold the rockfinder2 instance
+          // this includes all relations and additional RF2 data
+          grid.data = result.data;
+
+          // we set tabulator to monitor the "data" property of rockfinder
+          grid.config.data = grid.data.data;
+          init();
+        }
+        else {
+          // we set the grid data to the result's data property
+          // which must be an array of objects
+          grid.data = result.data;
+
+          // we set tabulator to monitor this array directly
+          grid.config.data = grid.data;
+          init();
+        }
       },
       error: function(data) {
         $(el).html("AJAX ERROR");

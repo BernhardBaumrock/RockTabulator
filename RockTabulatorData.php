@@ -26,14 +26,10 @@ class RockTabulatorData extends Wire {
   public $lang = [];
 
   /**
-   * Set data from a RockFinder v1
-   *
-   * @param RockFinder $rf
-   * @return void
+   * Data type
+   * @var string
    */
-  public function setRockFinder1($rf) {
-    $this->data = $rf->getObjects();
-  }
+  public $type = null;
 
   /**
    * Set data property
@@ -51,7 +47,14 @@ class RockTabulatorData extends Wire {
 
       // RockFinder v1
       case 'RockFinder':
+        /** @var RockFinder $data */
         $this->data = $data->getObjects();
+        break;
+
+      case 'RockFinder2':
+        /** @var RockFinder2 $data */
+        $this->data = $data->getData();
+        $this->type = 'RockFinder2';
         break;
 
       // sql data
@@ -115,10 +118,11 @@ class RockTabulatorData extends Wire {
    * Get json object
    */
   public function getJsonObject() {
-    return (object)[
+    $data = [
       'data' => $this->data,
       'lang' => $this->lang,
     ];
+    return (object)$data;
   }
 
   /**
