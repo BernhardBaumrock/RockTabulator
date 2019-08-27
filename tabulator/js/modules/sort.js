@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.3.0 (c) Oliver Folkerd */
+/* Tabulator v4.4.1 (c) Oliver Folkerd */
 
 var Sort = function Sort(table) {
 	this.table = table; //hold Tabulator object
@@ -33,10 +33,10 @@ Sort.prototype.initializeColumn = function (column, content) {
 		sorter: sorter, dir: "none",
 		params: column.definition.sorterParams || {},
 		startingDir: column.definition.headerSortStartingDir || "asc",
-		tristate: column.definition.headerSortTristate
+		tristate: typeof column.definition.headerSortTristate !== "undefined" ? column.definition.headerSortTristate : this.table.options.headerSortTristate
 	};
 
-	if (column.definition.headerSort !== false) {
+	if (typeof column.definition.headerSort === "undefined" ? this.table.options.headerSort !== false : column.definition.headerSort !== false) {
 
 		colEl = column.getElement();
 

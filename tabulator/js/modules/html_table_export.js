@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.3.0 (c) Oliver Folkerd */
+/* Tabulator v4.4.1 (c) Oliver Folkerd */
 
 var HtmlTableExport = function HtmlTableExport(table) {
 	this.table = table; //hold Tabulator object
@@ -201,6 +201,16 @@ HtmlTableExport.prototype.generateBodyElements = function (visible) {
 	var rows = visible ? this.table.rowManager.getVisibleRows(true) : this.table.rowManager.getDisplayRows();
 	var columns = [];
 
+	if (this.config.columnCalcs !== false && this.table.modExists("columnCalcs")) {
+		if (this.table.modules.columnCalcs.topInitialized) {
+			rows.unshift(this.table.modules.columnCalcs.topRow);
+		}
+
+		if (this.table.modules.columnCalcs.botInitialized) {
+			rows.push(this.table.modules.columnCalcs.botRow);
+		}
+	}
+
 	this.table.columnManager.columnsByIndex.forEach(function (column) {
 		if (_this4.columnVisCheck(column)) {
 			columns.push(column);
@@ -266,10 +276,11 @@ HtmlTableExport.prototype.generateBodyElements = function (visible) {
 						getColumn: function getColumn() {
 							return column.getComponent();
 						},
+						getData: function getData() {
+							return rowData;
+						},
 						getRow: function getRow() {
-							return {
-								normalizeHeight: function normalizeHeight() {}
-							};
+							return row.getComponent();
 						},
 						getComponent: function getComponent() {
 							return cellWrapper;

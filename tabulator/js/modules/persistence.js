@@ -1,4 +1,4 @@
-/* Tabulator v4.3.0 (c) Oliver Folkerd */
+/* Tabulator v4.4.1 (c) Oliver Folkerd */
 
 var Persistence = function Persistence(table) {
 	this.table = table; //hold Tabulator object
@@ -7,10 +7,24 @@ var Persistence = function Persistence(table) {
 	this.persistProps = ["field", "width", "visible"];
 };
 
+// Test for whether localStorage is available for use.
+Persistence.prototype.localStorageTest = function () {
+	var testKey = "_tabulator_test";
+
+	try {
+		window.localStorage.setItem(testKey, testKey);
+		window.localStorage.removeItem(testKey);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+
 //setup parameters
 Persistence.prototype.initialize = function (mode, id) {
 	//determine persistent layout storage type
-	this.mode = mode !== true ? mode : typeof window.localStorage !== 'undefined' ? "local" : "cookie";
+
+	this.mode = mode !== true ? mode : this.localStorageTest() ? "local" : "cookie";
 
 	//set storage tag
 	this.id = "tabulator-" + (id || this.table.element.getAttribute("id") || "");
@@ -60,13 +74,13 @@ Persistence.prototype.retreiveData = function (type) {
 			break;
 
 		default:
-			console.warn("Persistance Load Error - invalid mode selected", this.mode);
+			console.warn("Persistence Load Error - invalid mode selected", this.mode);
 	}
 
 	return data ? JSON.parse(data) : false;
 };
 
-//merge old and new column defintions
+//merge old and new column definitions
 Persistence.prototype.mergeDefinition = function (oldCols, newCols) {
 	var self = this,
 	    output = [];
@@ -177,11 +191,11 @@ Persistence.prototype.saveData = function (id, data) {
 			break;
 
 		default:
-			console.warn("Persistance Save Error - invalid mode selected", this.mode);
+			console.warn("Persistence Save Error - invalid mode selected", this.mode);
 	}
 };
 
-//build premission list
+//build permission list
 Persistence.prototype.parseColumns = function (columns) {
 	var self = this,
 	    definitions = [];

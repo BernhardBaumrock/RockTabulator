@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.3.0 (c) Oliver Folkerd */
+/* Tabulator v4.4.1 (c) Oliver Folkerd */
 
 var Filter = function Filter(table) {
 
@@ -18,7 +18,6 @@ var Filter = function Filter(table) {
 Filter.prototype.initializeColumn = function (column, value) {
 	var self = this,
 	    field = column.getField(),
-	    prevSuccess,
 	    params;
 
 	//handle successfull value change
@@ -27,9 +26,9 @@ Filter.prototype.initializeColumn = function (column, value) {
 		    type = "",
 		    filterFunc;
 
-		if (typeof prevSuccess === "undefined" || prevSuccess !== value) {
+		if (typeof column.modules.filter.prevSuccess === "undefined" || column.modules.filter.prevSuccess !== value) {
 
-			prevSuccess = value;
+			column.modules.filter.prevSuccess = value;
 
 			if (!column.modules.filter.emptyFunc(value)) {
 				column.modules.filter.value = value;
@@ -571,6 +570,7 @@ Filter.prototype.clearHeaderFilter = function () {
 
 	this.headerFilterColumns.forEach(function (column) {
 		column.modules.filter.value = null;
+		column.modules.filter.prevSuccess = undefined;
 		self.reloadHeaderFilter(column);
 	});
 

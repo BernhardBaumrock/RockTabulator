@@ -1,4 +1,4 @@
-/* Tabulator v4.3.0 (c) Oliver Folkerd */
+/* Tabulator v4.4.1 (c) Oliver Folkerd */
 
 var MoveColumns = function MoveColumns(table) {
 	this.table = table; //hold Tabulator object
@@ -242,7 +242,7 @@ MoveColumns.prototype.endMove = function (e) {
 		this.table.element.classList.remove("tabulator-block-select");
 
 		if (this.toCol) {
-			this.table.columnManager.moveColumn(this.moving, this.toCol, this.toColAfter);
+			this.table.columnManager.moveColumnActual(this.moving, this.toCol, this.toColAfter);
 		}
 
 		this.moving = false;

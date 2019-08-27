@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.3.0 (c) Oliver Folkerd */
+/* Tabulator v4.4.1 (c) Oliver Folkerd */
 
 var ColumnCalcs = function ColumnCalcs(table) {
 	this.table = table; //hold Tabulator object
@@ -317,9 +317,11 @@ ColumnCalcs.prototype.generateRowData = function (pos, data) {
 
 ColumnCalcs.prototype.hasTopCalcs = function () {
 	return !!this.topCalcs.length;
-}, ColumnCalcs.prototype.hasBottomCalcs = function () {
+};
+
+ColumnCalcs.prototype.hasBottomCalcs = function () {
 	return !!this.botCalcs.length;
-},
+};
 
 //handle table redraw
 ColumnCalcs.prototype.redraw = function () {

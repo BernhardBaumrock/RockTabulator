@@ -1,6 +1,6 @@
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/* Tabulator v4.3.0 (c) Oliver Folkerd */
+/* Tabulator v4.4.1 (c) Oliver Folkerd */
 
 var Format = function Format(table) {
 	this.table = table; //hold Tabulator object
@@ -22,7 +22,7 @@ Format.prototype.initializeColumn = function (column) {
 					config.params.crossElement = false;
 				}
 
-				console.warn("DEPRECATION WANRING - the tick formatter has been depricated, please use the tickCross formatter with the crossElement param set to false");
+				console.warn("DEPRECATION WARNING - the tick formatter has been deprecated, please use the tickCross formatter with the crossElement param set to false");
 			}
 
 			if (self.formatters[column.definition.formatter]) {
@@ -85,7 +85,7 @@ Format.prototype.sanitizeHTML = function (value) {
 };
 
 Format.prototype.emptyToSpace = function (value) {
-	return value === null || typeof value === "undefined" ? "&nbsp" : value;
+	return value === null || typeof value === "undefined" ? "&nbsp;" : value;
 };
 
 //get formatter for cell
@@ -513,7 +513,7 @@ Format.prototype.formatters = {
 
 		element.setAttribute("aria-label", percentValue);
 
-		return "<div style='position:realtive; height:100%;'  data-max='" + max + "' data-min='" + min + "'><div style='position:relative; height:100%; width:calc(" + percentValue + "%); background-color:" + color + "; display:inline-block;'></div></div>" + (legend ? "<div style='position:absolute; top:4px; left:0; text-align:" + legendAlign + "; width:100%; color:" + legendColor + ";'>" + legend + "</div>" : "");
+		return "<div style='position:relative; height:100%;'  data-max='" + max + "' data-min='" + min + "'><div style='position:relative; height:100%; width:calc(" + percentValue + "%); background-color:" + color + "; display:inline-block;'></div></div>" + (legend ? "<div style='position:absolute; top:4px; left:0; text-align:" + legendAlign + "; width:100%; color:" + legendColor + ";'>" + legend + "</div>" : "");
 	},
 
 	//background color
@@ -583,6 +583,43 @@ Format.prototype.formatters = {
 		toggleList(open);
 
 		return el;
+	},
+
+	rowSelection: function rowSelection(cell) {
+		var _this = this;
+
+		var checkbox = document.createElement("input");
+
+		checkbox.type = 'checkbox';
+
+		if (this.table.modExists("selectRow", true)) {
+
+			checkbox.addEventListener("click", function (e) {
+				e.stopPropagation();
+			});
+
+			if (typeof cell.getRow == 'function') {
+				var row = cell.getRow();
+
+				checkbox.addEventListener("change", function (e) {
+					row.toggleSelect();
+				});
+
+				checkbox.checked = row.isSelected();
+				this.table.modules.selectRow.registerRowSelectCheckbox(row, checkbox);
+			} else {
+				checkbox.addEventListener("change", function (e) {
+					if (_this.table.modules.selectRow.selectedRows.length) {
+						_this.table.deselectRow();
+					} else {
+						_this.table.selectRow();
+					}
+				});
+
+				this.table.modules.selectRow.registerHeaderSelectCheckbox(checkbox);
+			}
+		}
+		return checkbox;
 	}
 };
 
