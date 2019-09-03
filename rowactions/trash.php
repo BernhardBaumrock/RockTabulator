@@ -20,6 +20,6 @@ $action->execute = function() {
 
   $page->trash();
   return $this->_('Page trashed successfully')
-    ." ($id)";
+    ." (#$id)";
 };
 return $action;
