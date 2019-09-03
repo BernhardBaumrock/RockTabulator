@@ -1,9 +1,9 @@
 <?php namespace ProcessWire;
-$data = new RockTabulatorData();
+$grid = new RockTabulatorGrid();
 
 $finder = new RockFinder2();
 $finder->find('id>0, limit=100');
 $finder->addColumns(['title']);
-$data->setData($finder);
+$grid->setData($finder);
 
-return $data;
+return $grid;

@@ -6,7 +6,7 @@
  * @license Licensed under MIT
  * @link https://www.baumrock.com
  */
-require_once('RockTabulatorData.php');
+require_once('RockTabulatorGrid.php');
 class InputfieldRockTabulator extends InputfieldRockMarkup2 {
 
   public static function getModuleInfo() {
@@ -21,23 +21,42 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
   }
 
   /**
+   * init
+   */
+  public function init() {
+    parent::init();
+    $this->rt = $this->modules->get('RockTabulator');
+  }
+
+  /**
    * Called on renderReady
    * 
    * MUST NOT be hookable!
    */
   public function renderReady(Inputfield $parent = null, $renderValueMode = false) {
-    // load RockTabulator JavaScripts
-    $this->config->scripts->add($this->rm->toUrl(__DIR__ . '/RockTabulator.js'));
-    $this->config->styles->add($this->rm->toUrl(__DIR__ . '/RockTabulator.css'));
-    $this->config->scripts->add($this->rm->toUrl(__DIR__ . '/RockTabulatorGrid.js'));
-
     // load tabulator
-    $this->config->scripts->add($this->rm->toUrl(__DIR__ . '/lib/moment.min.js'));
-    $this->config->scripts->add($this->rm->toUrl(__DIR__ . '/tabulator/js/tabulator.min.js'));
-    $this->config->styles->add($this->rm->toUrl(__DIR__ . '/tabulator/css/tabulator_simple.min.css'));
+    $this->config->scripts->add($this->rm->assetUrl('lib/moment.min.js'));
+    $this->config->scripts->add($this->rm->assetUrl('tabulator/js/tabulator.min.js'));
+    $this->config->styles->add($this->rm->assetUrl('tabulator/css/tabulator_simple.min.css'));
 
-    // load the rocktabulatordata class
-    require_once('RockTabulatorData.php');
+    // load assets
+    foreach([__DIR__, $this->config->paths->assets.'RockTabulator'] as $dir) {
+      foreach(['plugins', 'rowactions'] as $folder) {
+        // load plugins
+        $files = $this->files->find("$dir/$folder", ['extensions' => ['js']]);
+        foreach($files as $file) $this->config->scripts->add($this->rm->assetUrl($file));
+        $files = $this->files->find("$dir/$folder", ['extensions' => ['css']]);
+        foreach($files as $file) $this->config->styles->add($this->rm->assetUrl($file));
+      }
+    }
+    
+    // load RockTabulator JavaScripts
+    $this->config->scripts->add($this->rm->assetUrl('RockTabulator.js'));
+    $this->config->styles->add($this->rm->assetUrl('RockTabulator.css'));
+    $this->config->scripts->add($this->rm->assetUrl('RockTabulatorGrid.js'));
+
+    // load the RockTabulatorGrid class
+    require_once('RockTabulatorGrid.php');
     
     return parent::renderReady($parent, $renderValueMode);
   }

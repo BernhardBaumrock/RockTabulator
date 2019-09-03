@@ -28,30 +28,6 @@ class ProcessRockTabulator extends ProcessRockMarkup2 {
    */
   public function init() {
     parent::init();
-
-    // modify code markup for PHP data file
-    $this->addHookAfter("RockMarkup2::getCodeMarkup", $this, 'hookCodeMarkup');
-  }
-
-  /**
-   * Hook code markup for sandbox
-   * @param HookEvent $event
-   */
-  public function hookCodeMarkup($event) {
-    $ext = $event->arguments(1);
-    if($ext != 'php') return;
-
-    // get table name from url
-    $name = $this->input->get('name', 'string');
-
-    // render button to send AJAX request
-    $b = $this->modules->get('InputfieldButton');
-    $b->id = 'tabulator_ajax_post';
-    $b->icon = 'paper-plane-o';
-    $b->attr('data-name', $name);
-    $b->value = $this->_('Send AJAX Post Request');
-    $b = $b->render();
-    $note = $this->_('See browser devtools for output');
-    $event->return .= "<div>$b<small>$note</small></div>";
+    $this->config->js('sandbox', true);
   }
 }

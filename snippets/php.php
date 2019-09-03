@@ -1,5 +1,9 @@
 <?php namespace ProcessWire;
-$data = new RockTabulatorData();
+// ###############################################################
+// see Setup > RockMarkup2 > Examples > e02_all_possible_filetypes
+// ###############################################################
+
+$data = new RockTabulatorGrid();
 
 // generate dummy data
 $arr = [];

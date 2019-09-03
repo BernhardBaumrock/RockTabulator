@@ -1,2 +1,5 @@
 <?php namespace ProcessWire;
+// ###############################################################
+// see Setup > RockMarkup2 > Examples > e02_all_possible_filetypes
+// ###############################################################
 $inputfield->notes = 'Your custom example note';

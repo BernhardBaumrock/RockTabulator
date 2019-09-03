@@ -1,5 +1,28 @@
 # RockTabulator
 
+## Plugins
+
+RockTabulator has its own RockTabulatorPlugins object stored as `plugins`
+property of the global RockTabulator object. You can easily add plugins
+to your RockTabulator by extending this object:
+
+```
+RockTabulatorPlugins.prototype.rowClicked = function(e, row) {
+  console.log(e, row);
+  ProcessWire.alert('Row clicked! Details logged to console');
+}
+```
+
+You can easily add plugins in js files inside
+`/site/modules/RockTabulator/plugins` and
+`/site/assets/RockTabulator/plugins`.
+
+You can see all available plugins in the console:
+
+![img](https://i.imgur.com/w0Cyp4a.png)
+
+---
+
 --- readme TBD ! ---
 
 --- this is just a list of notes ---
@@ -49,18 +72,6 @@
 * date
 * numbers (digits after comma)
 * buttons
-
-## Syntax
-
-Coldefs
-
-```js
-grid.getCol('mycolumn')
-  .width(100)
-  .header('My Heading')
-  .doFoo('foo')
-  .doBar('bar');
-```
 
 ## Sandbox
 

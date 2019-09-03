@@ -1,0 +1,12 @@
+<?php namespace ProcessWire;
+$grid = 'rt12_rowactions';
+
+$this->addHookAfter("RockTabulatorGrid($grid)::getRowaction(trash)", function(HookEvent $event) {
+  $action = $event->return;
+  $action->label = 'This label was hooked!';
+});
+
+$this->addHookAfter("RockTabulatorGrid($grid)::getRowaction(edit)", function(HookEvent $event) {
+  $action = $event->return;
+  $action->label = '';
+});

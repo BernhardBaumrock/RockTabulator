@@ -1,5 +1,5 @@
 <?php namespace ProcessWire;
-$data = new RockTabulatorData();
+$grid = new RockTabulatorGrid();
 
 // get PW commit data from github
 $http = new WireHttp();
@@ -10,6 +10,6 @@ $json = $http->getJSON("https://api.github.com/repos/processwire/processwire/sta
 if(function_exists('fl')) fl($json);
 
 // set data
-$data->setData($json);
+$grid->setData($json);
 
-return $data;
+return $grid;

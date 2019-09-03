@@ -1,5 +1,5 @@
 <?php namespace ProcessWire;
-$data = new RockTabulatorData();
+$grid = new RockTabulatorGrid();
 
 // generate dummy data
 $arr = [];
@@ -9,6 +9,6 @@ for($i=0; $i<100000; $i++) {
     'bar' => 'foo',
   ];
 }
-$data->setData($arr);
+$grid->setData($arr);
 
-return $data;
+return $grid;

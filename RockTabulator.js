@@ -1,8 +1,12 @@
 /**
  * Main RockTabulator class
  */
-RockMarkup2.log('RockTabulator.js');
+if(ProcessWire.config.sandbox) {
+  // we are in the sandbox so we create a global grid variable
+  var _grid;
+}
 
+// main object
 function RockTabulator() {
 
   /**
@@ -90,7 +94,6 @@ RockTabulator.prototype.init = function(el, options) {
 
 RockTabulator.prototype.createTabulator = function(el, grid) {
   var data = grid.data;
-  var conf = this.conf;
 
   // save datatype to grid object
   // this is needed later for disabling ajax on JS-only grids
@@ -98,15 +101,48 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
 
   // init the table vars
   var t;
+
+  // called after the table is created
+  // on ajax tables this is called after the data was loaded
   var afterInit = grid.options.afterInit || function() {};
+
+  // called after every ajax request has finished
+  var afterAjax = grid.options.afterAjax || function() {};
+
+  
+  // event listeners
+  $(document).on('rendered', '.RockTabulatorWrapper', function(e, grid) {
+    // fire ajax callbacks
+    if(grid.rendered === 0) afterInit(grid);
+    if(grid.dataType == 'ajax') afterAjax(grid);
+
+    // set ajax init flag
+    grid.rendered = grid.rendered+1;
+  });
+  
+  // setup renderComplete function
+  // if a custom callback is set by the user we store it
+  var renderComplete = grid.config.renderComplete || function(){};
+  grid.config.renderComplete = function(){
+    // call user defined rendercomplete callback
+    renderComplete();
+    grid.getWrapper().trigger('rendered', [grid]);
+  };
 
   // init tabulator and call callback
   var init = function() {
     table = new Tabulator(el, grid.config);
+    grid.setDataProperties();
     grid.table = table;
 
-    afterInit(table, grid);
+    // save table instance globally
+    if(ProcessWire.config.sandbox) {
+      _grid = grid;
+      console.log("_grid", _grid);
+    }
   }
+
+  console.log(grid.dataType, grid);
 
   if(grid.dataType == 'object') {
     grid.dataType = 'js';
@@ -117,52 +153,60 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
     grid.config.data = [];
 
     // external json url
-    // todo
+    grid.config.ajaxURL = 'https://jsonplaceholder.typicode.com/posts';
+    init();
   }
   else {
-    // no data was set
-    // we get the data via an internal AJAX request which will execute the
-    // corresponding PHP data file (tabulatorname.php)
+    // ajax data
     grid.dataType = 'ajax';
-    this.post({
-      name: grid.name,
-      done: function(result) {
-        // check type json
-        if(typeof result != 'object') {
-          $(el).html("Wrong response type (JSON required)");
-          return;
+    grid.config.data = [];
+
+    // prepare lang
+    var lang = null;
+    if(ProcessWire.config.LanguageSupport) {
+      lang = ProcessWire.config.LanguageSupport.language.id;
+    }
+
+    // modify config object
+    grid.config.ajaxURL = RockTabulator.url;
+    grid.config.ajaxParams = {
+      name:grid.name,
+      lang:lang,
+    };
+    grid.config.ajaxConfig = "post";
+
+    // alter received data to fit tabulators needs
+    grid.config.ajaxResponse = function(url, params, response) {
+      // save response to grid
+      grid.response = response;
+
+      // check if response data is a tabulatorgrid data object
+      if(typeof response == 'object') {
+        // did we get an error?
+        if(response.error) {
+          $(el).html('<div class="uk-alert-warning" uk-alert>'+response.error+'</div>');
+          return [];
         }
 
-        // check for error message
-        if(result.error) {
-          $(el).html(result.error);
-          return;
+        // return data array
+        if(response.type == 'sql') return response.data;
+        if(response.type == 'array') return response.data;
+        if(response.type == 'RockFinder1') {
+          grid.setDataProperties(response);
+          return response.data;
         }
-
-        // is this a rockfinder2 data object?
-        if(result.type == 'RockFinder2') {
-          // grid.data will hold the rockfinder2 instance
-          // this includes all relations and additional RF2 data
-          grid.data = result.data;
-
-          // we set tabulator to monitor the "data" property of rockfinder
-          grid.config.data = grid.data.data;
-          init();
+        if(response.type == 'RockFinder2') {
+          grid.setDataProperties(response);
+          return response.data.data;
         }
-        else {
-          // we set the grid data to the result's data property
-          // which must be an array of objects
-          grid.data = result.data;
+      }
 
-          // we set tabulator to monitor this array directly
-          grid.config.data = grid.data;
-          init();
-        }
-      },
-      error: function(data) {
-        $(el).html("AJAX ERROR");
-      },
-    });
+      UIkit.notification('Unknown type of data', {status:'danger'});
+      console.warn(response);
+      return [];
+    }
+
+    init();
   }
 }
 
@@ -172,6 +216,7 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
 RockTabulator.prototype.post = function(obj) {
   var doneCallback = obj.done || function(){};
   var errorCallback = obj.error || function(){};
+  var alwaysCallback = obj.always || function(){};
   
   // prepare lang
   var lang = null;
@@ -179,12 +224,19 @@ RockTabulator.prototype.post = function(obj) {
     lang = ProcessWire.config.LanguageSupport.language.id;
   }
 
-  // send post request
-  $.post(RockTabulator.url, {
+  // setup payload
+  var payload = obj.payload || {}
+  $.extend(payload, {
     name: obj.name,
     lang: lang,
-  }).done(doneCallback)
-    .error(errorCallback);
+  });
+
+  // send post request
+  var url = obj.url || RockTabulator.url;
+  $.post(url, payload)
+    .done(doneCallback)
+    .error(errorCallback)
+    .always(alwaysCallback);
 }
 
 /**
@@ -192,6 +244,9 @@ RockTabulator.prototype.post = function(obj) {
  */
 RockTabulator.prototype.addGrid = function(name) {
   var grid = new RockTabulatorGrid(name);
+
+  // trigger event (for plugins)
+  $(document).trigger('RockTabulatorGridReady', [grid]);
 
   // By default the data property is NULL
   // This means an AJAX request will be fired to get data from the PHP file
@@ -203,12 +258,18 @@ RockTabulator.prototype.addGrid = function(name) {
 };
 
 /**
- * Return grid by name
+ * Return grid by name or dom element
  */
 RockTabulator.prototype.getGrid = function(name) {
   for(var i=0; i<this.grids.length; i++) {
     if(this.grids[i].name == name) return this.grids[i];
   }
+
+  // if the grid was not found yet try to find it via jquery
+  var el = name;
+  $li = $(el).closest('.Inputfield');
+  if(!$li.length) return;
+  return this.getGrid($li.data('name'));
 }
 
 /**
@@ -220,8 +281,13 @@ RockTabulator.prototype._ = function(name) {
   return langs[name] || '';
 }
 
-// init one global RockTabulator object
+// ######################### init RockTabulator #########################
 var RockTabulator = new RockTabulator();
+$(document).trigger('RockTabulatorReady');
+// ######################################################################
+
+
+// ######################### misc #########################
 
 // fix some display issues
 $(document).ready(function() {
@@ -230,21 +296,5 @@ $(document).ready(function() {
   $.each(RockTabulator.grids, function(i, grid) {
     if(!grid.table) return;
     grid.table.redraw();
-  });
-});
-
-// Sandbox AJAX requests
-$(document).on('click', '#tabulator_ajax_post', function() {
-  var name = $(this).data('name');
-  
-  // send ajax post
-  RockTabulator.post({
-    name,
-    done: function(data) {
-      console.log(data);
-    },
-    error: function(data) {
-      console.error(data);
-    },
   });
 });

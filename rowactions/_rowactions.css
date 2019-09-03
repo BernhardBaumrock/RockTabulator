@@ -1,0 +1,14 @@
+.tabulator-cell ul.PageListActions { margin: 0;padding: 0; margin-top: 2px; display: inline; }
+ul.PageListActions li { display: inline; }
+ul.PageListActions li span.label { padding-left: 5px; }
+
+/* actions that are only shown when hovering the cell */
+.tabulator-cell a.show-on-hover {
+  position:absolute;
+  opacity: 0;
+}
+.tabulator-cell:hover a.show-on-hover { 
+  position: static;
+  opacity: 1;
+  transition: opacity 1s ease;
+}

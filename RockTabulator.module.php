@@ -9,7 +9,7 @@ class RockTabulator extends RockMarkup2 {
   public static function getModuleInfo() {
     return [
       'title' => 'RockTabulator Main Module',
-      'version' => '0.0.1',
+      'version' => '0.0.2',
       'summary' => 'RockTabulator Main Module that installs and uninstalls all related modules.',
       'singular' => true,
       'autoload' => true,
@@ -59,7 +59,7 @@ class RockTabulator extends RockMarkup2 {
     parent::init();
     
     // intercept 404 page for returning ajax data
-    require_once('RockTabulatorData.php');
+    require_once('RockTabulatorGrid.php');
     $this->addHookBefore('ProcessPageView::pageNotFound', $this, 'handleAjax');
   }
 
@@ -127,19 +127,51 @@ class RockTabulator extends RockMarkup2 {
       $this->user->language = $lang;
     }
 
-    // try to get data
-    try {
-      $data = $this->getTabulatorData($name);
-    } catch (\Throwable $th) {
-      $this->die($th->getMessage());
-    }
+    // handle rowaction calls before getting data of the grid
+    $this->handleRowaction($name);
 
-    // do not execute the 404, return json instead
-    header("Content-type: application/json");
-    ob_start("ob_gzhandler");
-    echo json_encode($data);
-    ob_end_flush();
-    exit();
+    // do not execute the 404, return gzipped json data instead
+    try {
+      /** @var RockTabulatorGrid $grid */
+      $grid = $this->getGrid($name);
+      $data = $grid->getJsonObject();
+    } catch (\Throwable $th) {
+      $data = $this->err($th->getMessage());
+    }
+    $this->gzip($data);
+  }
+
+  /**
+   * Handle call of rowactions
+   * @param string $grid name of grid
+   * @return bool
+   */
+  public function handleRowaction($grid) {
+    $name = $this->input->get('rowaction', 'string');
+    if(!$name) return;
+
+    try {
+      $grid = $this->getGrid($grid, false);
+      $action = $grid->getRowaction($name);
+      if($action) {
+        // check access
+        if(!$action->access()) {
+          throw new WireException("You are not allowed to execute this rowaction");
+        }
+
+        // this makes sure that notices don't break the ajax response
+        // when errors are reported via PHP they are added before all other
+        // output which makes the gzipped response corrupt
+        error_reporting(0);
+        $data = $action->execute();
+        if($data) $data = ['success' => $data];
+      }
+      else throw new WireException("Action $name not found");
+    } catch (\Throwable $th) {
+      $data = $this->err($th->getMessage());
+    }
+    
+    $this->gzip($data);
   }
 
   /**
@@ -154,53 +186,68 @@ class RockTabulator extends RockMarkup2 {
   }
 
   /**
-   * Die and send message as JSON
+   * Return gzip data and exit
+   * @param mixed $data
+   * @return void
    */
-  public function die($msg) {
+  public function gzip($data) {
     header("Content-type: application/json");
-    die(json_encode($this->err($msg)));
+    ob_start("ob_gzhandler");
+    echo json_encode($data);
+    ob_end_flush();
+    exit();
   }
 
   /**
-   * Get data for given tabulator
-   * @param string $name
+   * Get grid data object
+   * 
+   * If loadRows flag is set to TRUE it will return the data object without
+   * loading all rows of the tabulator. This is necessary if one only wants
+   * to retrieve rowactions or gridactions but does not need all data rows.
+   * 
+   * @param string $name name of grid
+   * @param bool $loadRows load row data?
    * @return mixed
    */
-  public function getTabulatorData($name = null) {
+  public function getGrid($name = null, $loadRows = true) {
     if(!$name) $name = $this->input->get('name', 'string');
     if(!$name) return;
 
+    // set loadRows flag in session
+    $this->session->loadTabulatorRows = $loadRows;
+
+    // get file and load data
     $file = $this->getFile($name);
-    $data = $this->files->render($file->path, [], [
+    $grid = $this->files->render($file->path, [], [
       'allowedPaths' => [$file->dir],
     ]);
-    if(!$data) throw new WireException("Error retrieving data for this tabulator");
+
+    // if the php file does not return a grid we exit here
+    if(!$grid instanceof RockTabulatorGrid) return;
+
+    // set gridname
+    $grid->name = $name;
 
     // ########## CHECK ACCESS ##########
     // by default only superusers have access
-    $access = $this->user->isSuperuser();
-    $msg = '';
-    if(is_callable($data->access)) {
-      $result = $data->access->__invoke();
-      if($result === true) $access = true;
-      else {
-        $access = false;
-        if($result) $msg = $result;
-        else $msg = "NO ACCESS";
-      }
+    $access = false;
+    $msg = 'NO ACCESS';
+    try {
+      $access = $grid->access();
+    } catch (\Throwable $th) {
+      $msg = $th->getMessage();
+      $access = false;
     }
-
-    // no access? return error message
-    if(!$access) return $this->err($msg);
+    if(!$access) throw new WireException($msg);
 
     // data correct?
-    if(!$data) return;
-    if(!$data instanceof RockTabulatorData) {
-      throw new WireException("{$file->url} must return a RockTabulatorData object!");
+    if(!$grid) return;
+    if(!$grid instanceof RockTabulatorGrid) {
+      throw new WireException("{$file->url} must return a RockTabulatorGrid object!");
     }
 
     // all good, return data
-    return $data;
+    return $grid;
   }
   
   /**
