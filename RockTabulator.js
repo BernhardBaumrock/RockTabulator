@@ -98,20 +98,17 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
   // save datatype to grid object
   // this is needed later for disabling ajax on JS-only grids
   grid.dataType = typeof data;
-
-  // init the table vars
-  var t;
-
-  // called after the table is created
-  // on ajax tables this is called after the data was loaded
-  var afterInit = grid.options.afterInit || function() {};
-
-  // called after every ajax request has finished
-  var afterAjax = grid.options.afterAjax || function() {};
-
   
   // event listeners
   $(document).on('rendered', '.RockTabulatorWrapper', function(e, grid) {
+    
+    // called after the table is created
+    // on ajax tables this is called after the data was loaded
+    var afterInit = grid.options.afterInit || function() {};
+
+    // called after every ajax request has finished
+    var afterAjax = grid.options.afterAjax || function() {};
+    
     // fire ajax callbacks
     if(grid.rendered === 0) afterInit(grid);
     if(grid.dataType == 'ajax') afterAjax(grid);
@@ -141,8 +138,6 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
       console.log("_grid", _grid);
     }
   }
-
-  console.log(grid.dataType, grid);
 
   if(grid.dataType == 'object') {
     grid.dataType = 'js';

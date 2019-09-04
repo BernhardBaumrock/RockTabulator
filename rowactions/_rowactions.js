@@ -2,7 +2,6 @@
  * Extend Grid to support Rowactions
  */
 $(document).on('RockTabulatorGridReady', function(event, grid) {
-  
   /**
    * Update columns based on a colDefs array
    */
@@ -15,8 +14,9 @@ $(document).on('RockTabulatorGridReady', function(event, grid) {
 
     // count actions
     var cnt = 0;
+    var rowactions = grid.rowactions || {};
     $.each(actions, function(i, action) {
-      if(typeof action == "string") action = grid.rowactions[action];
+      if(typeof action == "string") action = rowactions[action];
       if(action) cnt++;
     });
     
