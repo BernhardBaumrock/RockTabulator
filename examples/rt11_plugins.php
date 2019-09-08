@@ -1,6 +1,4 @@
 <?php namespace ProcessWire;
-$grid = new RockTabulatorGrid();
-
 $limit = 15;
 
 // generate dummy data

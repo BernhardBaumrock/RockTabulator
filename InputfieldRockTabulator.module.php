@@ -49,16 +49,32 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
         foreach($files as $file) $this->config->styles->add($this->rm->assetUrl($file));
       }
     }
-    
+
     // load RockTabulator JavaScripts
     $this->config->scripts->add($this->rm->assetUrl('RockTabulator.js'));
     $this->config->styles->add($this->rm->assetUrl('RockTabulator.css'));
     $this->config->scripts->add($this->rm->assetUrl('RockTabulatorGrid.js'));
-
-    // load the RockTabulatorGrid class
-    require_once('RockTabulatorGrid.php');
     
     return parent::renderReady($parent, $renderValueMode);
+  }
+
+  /**
+   * Render init tag
+   * @return string
+   */
+  public function initTag() {
+    // get json object from this grid's data object
+    try {
+      $grid = $this->main->getGrid($this->name);
+      if(!$grid) $grid = new RockTabulatorGrid($this->name);
+    } catch (\Throwable $th) {
+      return '<div class="uk-alert-warning" uk-alert>'.$th->getMessage().'</div>';
+    }
+
+    return $this->tpl('_initTag.php', [
+      'id' => "#".$this->id,
+      'json' => $grid->getJSON(),
+    ]);
   }
 
   /**
@@ -72,9 +88,11 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
    * Hookable template render function
    * @return string
    */
-  public function ___tpl($file) {
-    return $this->wire->files->render(__DIR__.'/templates/'.$file, [
+  public function ___tpl($file, $vars = []) {
+    $defaults = [
       'tabulator' => $this,
-    ]);
+    ];
+    $vars = array_merge($defaults, $vars);
+    return $this->wire->files->render(__DIR__.'/templates/'.$file, $vars);
   }
 }

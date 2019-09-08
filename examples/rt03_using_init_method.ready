@@ -1,2 +1,0 @@
-<?php namespace ProcessWire;
-$inputfield->notes = 'Hover cells to see tooltips!';

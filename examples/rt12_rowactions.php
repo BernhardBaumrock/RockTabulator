@@ -1,5 +1,4 @@
 <?php namespace ProcessWire;
-$grid = new RockTabulatorGrid();
 
 $rf = new RockFinder2();
 $rf->find('template=cat');

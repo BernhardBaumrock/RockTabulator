@@ -1,4 +1,4 @@
-$(document).on('rowaction.rt', function(e, name, grid) {
+$(document).on('rowaction.RT', function(e, name, grid) {
   if(name != 'trash') return;
 
   var $a = $(e.target).closest('a'); // link element

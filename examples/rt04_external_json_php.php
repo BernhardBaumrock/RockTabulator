@@ -1,5 +1,4 @@
 <?php namespace ProcessWire;
-$grid = new RockTabulatorGrid();
 
 // get PW commit data from github
 $http = new WireHttp();

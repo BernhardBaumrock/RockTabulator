@@ -40,9 +40,19 @@ class RockTabulatorGrid extends Wire {
 
   /**
    * Constructor
+   * TODO test :)
    */
-  public function __construct() {
+  public function __construct($name = null) {
+    // set grid name
+    // if not name is provided (eg in examples)
+    $this->name = $name;
+    
     $this->rowactions = $this->wire(new WireArray);
+
+    // By default the data type is set to "js". This means that the data for
+    // the tabulator is set directly and exclusively from the client. This also
+    // means that AJAX functionality is disabled.
+    $this->type = 'js';
   }
 
   /**

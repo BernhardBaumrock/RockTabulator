@@ -1,3 +1,5 @@
-$(document).on('loaded', '.RockMarkup2[data-name=rt08_multilang]', function() {
-  RockTabulator.init(this);
+$(document).on('gridReady.RT', function(event, grid) {
+  // important if you have multiple gris on one page
+  if(grid.name != 'rt08_multilang') return;
+  grid.initTable();
 });

@@ -19,14 +19,27 @@ function RockTabulator() {
    */
   this.url = '/rocktabulator/';
 
-  // global config
-  this.conf = ProcessWire.config.RockTabulator;
+  /**
+   * Init plugins
+   */
+
+  /**
+   * Populate all properties of the config to this Tabulator
+   */
+  var config = ProcessWire.config.RockTabulator;
+  for (var prop in config) {
+    if (Object.prototype.hasOwnProperty.call(config, prop)) {
+      this[prop] = config[prop];
+    }
+  }
 };
 
 /**
  * Init a grid when the dom element was loaded
+ * This does NOT init the tabulator. This is necessary so that tabulators
+ * can manually be initialized (eg when loading data from another grid).
  */
-RockTabulator.prototype.init = function(el, options) {
+RockTabulator.prototype.initGrid = function(el, data) {
   // get jquery and dom object of element
   var $el = el;
   if(!el.jquery) $el = $(el);
@@ -34,62 +47,16 @@ RockTabulator.prototype.init = function(el, options) {
   // make sure it is the inputfield li element
   $el = $el.closest('li.Inputfield');
   if(!$el.length) {
-    alert('RockTabulator must be inside of an Inputfield');
+    alert('RockTabulator must be initialized inside of an Inputfield');
     return;
   }
   el = $el[0];
 
-  // replace setup instructions with loading spinner
-  $el.find('.RockTabulator').html('<i class="fa fa-spin fa-spinner"></i>');
-
-  // get the tabulator container
-  var name = el.id.replace('Inputfield_', '');
-  var $container = $el.find('div.RockTabulator');
-
-  // set options
-  var options = options || {};
-
   // save it to the grid
-  var grid = RockTabulator.addGrid(name);
-
-  // add properties to grid
-  grid.options = options;
-
-  // if data was set via JS we add it to the grid object
-  // this property is monitored via tabulator reactiveData feature
-  grid.data = options.data;
-
-  // set defaults
-  var defaults = {
-    // Set data of the tabulator
-    // We enable reactive data so that tabulator automatically updates whenever
-    // the source data changes.
-    reactiveData: true,
-    data: grid.data,
-    
-    // set columns from datasource
-    autoColumns: true,
-
-    // pagination
-    pagination: "local",
-    paginationSize: 10,
-    paginationSizeSelector: true,
-
-    // layout
-    layout:"fitColumns",
-
-    // locale
-    locale: this.conf.locale,
-    langs: this.conf.langs,
-  }
-  
-  // merge tabulator config options
-  grid.config = $.extend(defaults, options.config);
-
-  // create tabulator
-  this.createTabulator($container[0], grid);
-
-  return grid;
+  var name = el.id.replace('Inputfield_', '');
+  var grid = RockTabulator.getGrid(name);
+  if(grid) return grid;
+  else return this.addGrid(name, data);
 }
 
 RockTabulator.prototype.createTabulator = function(el, grid) {
@@ -123,7 +90,7 @@ RockTabulator.prototype.createTabulator = function(el, grid) {
   grid.config.renderComplete = function(){
     // call user defined rendercomplete callback
     renderComplete();
-    grid.getWrapper().trigger('rendered', [grid]);
+    grid.getWrapper().trigger('rendered.RT', [grid]);
   };
 
   // init tabulator and call callback
@@ -237,19 +204,18 @@ RockTabulator.prototype.post = function(obj) {
 /**
  * Add grid
  */
-RockTabulator.prototype.addGrid = function(name) {
+RockTabulator.prototype.addGrid = function(name, data) {
   var grid = new RockTabulatorGrid(name);
 
-  // trigger event (for plugins)
-  $(document).trigger('RockTabulatorGridReady', [grid]);
-
-  // By default the data property is NULL
-  // This means an AJAX request will be fired to get data from the PHP file
-  // having the same name as the grid.
-  grid.data = null;
-
-  this.grids.push(grid);
-  return grid;
+  $.extend(grid, data); // load data from php json string
+  this.grids.push(grid); // push grid to array
+  $(document).trigger('gridReady.RT', [grid]); // trigger event
+  
+  // save table instance globally when we are in the sandbox
+  if(ProcessWire.config.sandbox) {
+    _grid = grid;
+    console.log("_grid", _grid);
+  }
 };
 
 /**
@@ -278,18 +244,6 @@ RockTabulator.prototype._ = function(name) {
 
 // ######################### init RockTabulator #########################
 var RockTabulator = new RockTabulator();
-$(document).trigger('RockTabulatorReady');
+$(document).trigger('loadPlugins.RT');
+$(document).trigger('ready.RT');
 // ######################################################################
-
-
-// ######################### misc #########################
-
-// fix some display issues
-$(document).ready(function() {
-  // redraw all tabulators once
-  // without this redraw inputfields with JS data and collapsed state open have a glitch
-  $.each(RockTabulator.grids, function(i, grid) {
-    if(!grid.table) return;
-    grid.table.redraw();
-  });
-});

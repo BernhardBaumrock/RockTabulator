@@ -1,5 +1,4 @@
 <?php namespace ProcessWire;
-$grid = new RockTabulatorGrid();
 
 // generate dummy data
 $arr = [];
@@ -13,8 +12,9 @@ $grid->setData($arr);
 
 // set access control for this data object
 $grid->access = function($grid) {
-  if($this->user->name != 'whatsoever') {
-    throw new WireException("Grid $grid is only visible to user whatsoever");
+  if(!$this->input->get('access', 'bool')) {
+    $msg = "Grid $grid is only visible if the GET param 'access' is set to true";
+    throw new WireException($msg);
   }
   else return true;
 };

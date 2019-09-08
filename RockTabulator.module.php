@@ -67,14 +67,13 @@ class RockTabulator extends RockMarkup2 {
   public function ready() {
     // load locales
     $this->conf = $this->wire(new WireArray);
-    $this->addHookBefore("setGlobalConfig", $this, 'loadLocales');
     $this->setGlobalConfig();
   }
 
   /**
    * Load locales to config object
    */
-  public function loadLocales($event) {
+  public function loadLocales() {
     $locale = $this->getLocale();
     if(!$locale) return;
 
@@ -102,7 +101,8 @@ class RockTabulator extends RockMarkup2 {
    * Set global JS configuration object
    * 
    */
-  public function ___setGlobalConfig() {
+  public function setGlobalConfig() {
+    $this->loadLocales();
     $data = $this->conf->getArray();
     $this->wire->config->js('RockTabulator', $data);
   }
@@ -118,7 +118,7 @@ class RockTabulator extends RockMarkup2 {
     if(!$name) return;
 
     $url = $event->arguments(1);
-    if($url != '/rocktabulator/') return;
+    if($url != $this->config->urls->root . 'rocktabulator/') return;
 
     // ########## GET DATA ##########
     $langID = $langID = $this->input->post('lang', 'int');
@@ -213,12 +213,19 @@ class RockTabulator extends RockMarkup2 {
     if(!$name) $name = $this->input->get('name', 'string');
     if(!$name) return;
 
+    // early exit for rockfinder2 sandbox as no file exists there
+    if($name == 'rockfinder2_sandbox') return;
+
     // set loadRows flag in session
     $this->session->loadTabulatorRows = $loadRows;
 
     // get file and load data
     $file = $this->getFile($name);
-    $grid = $this->files->render($file->path, [], [
+    if(!$file) throw new WireException("No grid data for $name");
+    
+    $grid = $this->wire->files->render($file->path, [
+      'grid' => new RockTabulatorGrid($file->name),
+    ], [
       'allowedPaths' => [$file->dir],
     ]);
 

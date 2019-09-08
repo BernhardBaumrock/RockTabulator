@@ -1,16 +1,16 @@
 /**
  * Extend Grid to support Rowactions
  */
-$(document).on('RockTabulatorGridReady', function(event, grid) {
+$(document).on('gridReady.RT', function(event, grid) {
+
   /**
    * Update columns based on a colDefs array
    */
   RockTabulatorGrid.prototype.setRowactions = function(actions, options) {
-    var grid = this;
-    var actions = actions || ['panel', 'trash'];
-
+    var grid = this
+    var actions = actions || ['panel', 'trash']
     var options = options || {}
-    var column = options.column || 'id';
+    var column = options.column || 'id'
 
     // count actions
     var cnt = 0;
@@ -91,7 +91,7 @@ $(document).on('RockTabulatorGridReady', function(event, grid) {
 $(document).on('click', '.RockTabulator .PageListActions a', function(e) {
   // trigger rowaction event on the link element
   var $a = $(e.target).closest('a');
-  $a.trigger('rowaction.rt', [
+  $a.trigger('rowaction.RT', [
     $a.data('name'), // name of action
     $a.closest('.RockTabulator'), // RockTabulator container
   ]);

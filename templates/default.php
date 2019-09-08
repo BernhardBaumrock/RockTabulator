@@ -5,6 +5,10 @@
     </div>
   </div>
   <div class="RockTabulator">
-    <?= $tabulator->tpl('_initMsg') ?>
+    <?php
+    // this will add the grid to the RockTabulator object
+    // the init tag will then be removed automatically from the DOM
+    echo $tabulator->initTag();
+    ?>
   </div>
 </div>

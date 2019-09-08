@@ -1,5 +1,4 @@
 <?php namespace ProcessWire;
-$grid = new RockTabulatorGrid();
 
 // generate dummy data
 $arr = [];

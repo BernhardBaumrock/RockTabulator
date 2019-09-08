@@ -24,17 +24,120 @@ RockTabulatorGrid.prototype.setDataProperties = function(data) {
 }
 
 /**
+ * Initialize the tabulator table for this grid
+ */
+RockTabulatorGrid.prototype.initTable = function(config, options) {
+  var config = config || {};
+  var options = options || {};
+
+  // find DOM element for current grid
+  var $el = this.getInputfield().find('.RockTabulator');
+  if(!$el.length) {
+    alert('init of table failed, element with class RockTabulator not found');
+    return;
+  }
+
+  // save grid instance
+  var grid = this;
+
+  // where is the data stored?
+  var data;
+  switch (grid.type) {
+    case 'RockFinder2':
+      data = grid.data.data;
+      break;
+  
+    default:
+      data = grid.data;
+      break;
+  }
+
+  // setup table config
+  var defaults = {
+    // Set data of the tabulator
+    // We enable reactive data so that tabulator automatically updates whenever
+    // the source data changes.
+    reactiveData: true,
+    data: data,
+    
+    // set columns from datasource
+    autoColumns: true,
+
+    // pagination
+    pagination: "local",
+    paginationSize: 10,
+    paginationSizeSelector: true,
+
+    // layout
+    layout:"fitColumns",
+
+    // locale
+    locale: RockTabulator.locale,
+    langs: RockTabulator.langs,
+
+    // ajax callback that is triggered after every ajax request
+    ajaxResponse:function(url, params, response) {
+      var data;
+
+      // save response to grid
+      grid.response = response;
+
+      // check if response data is a tabulatorgrid data object
+      if(typeof response == 'object') {
+        // // did we get an error?
+        // if(response.error) {
+        //   $(el).html('<div class="uk-alert-warning" uk-alert>'+response.error+'</div>');
+        //   return [];
+        // }
+
+        // return data array
+        if(response.type == 'sql') data = response.data;
+        if(response.type == 'array') data = response.data;
+        if(response.type == 'RockFinder1') {
+          grid.setDataProperties(response);
+          data = response.data;
+        }
+        if(response.type == 'RockFinder2') {
+          grid.setDataProperties(response);
+          data = response.data.data;
+        }
+      }
+
+      if(!data) {
+        UIkit.notification('Unknown type of data', {status:'danger'});
+        console.warn(response);
+      }
+
+      grid.getWrapper().trigger('tableReady.RT', [grid]);
+      return data || [];
+    },
+  }
+
+  // load defaults?
+  // if set to false you can load a completely custom tabulator
+  if(options.loadDefaults !== false) config = $.extend(defaults, config);
+
+  this.table = new Tabulator($el[0], config);
+  grid.getWrapper().trigger('tableReady.RT', [grid]);
+  return this.table;
+}
+
+/**
  * AJAX reload data of this grid
  */
 RockTabulatorGrid.prototype.reload = function() {
-  var spinner = '<i class="fa fa-spin fa-spinner"></i> ';
-  var loading = UIkit.notification(spinner+'Reloading grid...', {timeout: 0});
-  this.table.replaceData()
-  .then(function(){
-    loading.close();
-  })
-  .catch(function(error){
-    UIkit.notification(error, {status:'danger'});
+  // prepare lang
+  var lang = null;
+  if(ProcessWire.config.LanguageSupport) {
+    lang = ProcessWire.config.LanguageSupport.language.id;
+  }
+
+  var grid = this;
+  grid.table.setData(RockTabulator.url, {
+    name: this.name, // name of the grid
+    lang: lang, // language id
+  }, "post").then(function(response) {
+    $(grid.getWrapper()).trigger('tableReady.RT', [grid]);
   });
 }
 
@@ -83,6 +186,7 @@ RockTabulatorGrid.prototype.getWrapper = function() {
 
 /**
  * Set new coldef for column
+ * TODO: create setColdefs method to do multiple at once
  */
 RockTabulatorGrid.prototype.setColdef = function(column, newColdef, replace) {
   var replace = replace || false;
@@ -136,4 +240,3 @@ RockTabulatorGrid.prototype.replaceTags = function(string, data, tags) {
 RockTabulatorGrid.prototype._ = function(name) {
   return this.lang[name] || RockTabulator._(name);
 }
-

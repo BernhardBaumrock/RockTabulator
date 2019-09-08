@@ -1,19 +1,15 @@
-$(document).on('loaded', '.RockMarkup2[data-name=rt12_rowactions]', function() {
-  var RT = RockTabulator;
+/**
+ * Init the grid on load of the Inputfield
+ */
+$(document).on('gridReady.RT', function(event, grid) {
+  // important if you have multiple gris on one page
+  if(grid.name != 'rt12_rowactions') return;
+  grid.initTable();
+});
 
-  // init the grid
-  RT.init(this, {
-    afterInit: function(grid) {
-      grid.setRowactions();
-  
-      grid.setColdef('title', {
-        formatter: function(cell) {
-          return cell.getValue()
-            + grid.renderRowactions(cell, ['trash'], {
-              onHover: true,
-            });
-        }
-      });
-    },
-  });
+/**
+ * Modify the table when it is ready
+ */
+$(document).on('tableReady.RT', function(event, grid) {
+  grid.setRowactions();
 });

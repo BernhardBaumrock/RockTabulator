@@ -1,9 +1,8 @@
 <?php namespace ProcessWire;
-$grid = new RockTabulatorGrid();
 
 // generate dummy data
 $arr = [];
-for($i=0; $i<100000; $i++) {
+for($i=0; $i<1000; $i++) {
   $arr[] = (object)[
     'foo' => 'bar'.$i,
     'bar' => 'foo',

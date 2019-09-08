@@ -3,8 +3,6 @@
 // see Setup > RockMarkup2 > Examples > e02_all_possible_filetypes
 // ###############################################################
 
-$data = new RockTabulatorGrid();
-
 // generate dummy data
 $arr = [];
 for($i=0; $i<10; $i++) {
@@ -13,6 +11,6 @@ for($i=0; $i<10; $i++) {
     'bar' => 'foo',
   ];
 }
-$data->setData($arr);
+$grid->setData($arr);
 
-return $data;
+return $grid;
