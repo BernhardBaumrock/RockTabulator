@@ -1,3 +1,4 @@
+'use strict';
 // ###################### external file start #################################
 // This part is usually loaded from external .js files in the /plugins folder
 $(document).on('pluginsReady.RT', function(e, grid) {

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * RockTabulator Grid Formatter Support
  */

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Init the grid on load of the Inputfield
  */

@@ -34,10 +34,12 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
    * MUST NOT be hookable!
    */
   public function renderReady(Inputfield $parent = null, $renderValueMode = false) {
+    $min = $this->config->debug ? '' : '.min';
+
     // load tabulator
-    $this->config->scripts->add($this->rm->assetUrl('lib/moment.min.js'));
-    $this->config->scripts->add($this->rm->assetUrl('tabulator/js/tabulator.min.js'));
-    $this->config->styles->add($this->rm->assetUrl('tabulator/css/tabulator_simple.min.css'));
+    $this->config->scripts->add($this->rm->assetUrl("lib/moment.min.js"));
+    $this->config->scripts->add($this->rm->assetUrl("tabulator/js/tabulator$min.js"));
+    $this->config->styles->add($this->rm->assetUrl("tabulator/css/tabulator_simple$min.css"));
 
     // load assets
     foreach([__DIR__, $this->config->paths->assets.'RockTabulator'] as $dir) {

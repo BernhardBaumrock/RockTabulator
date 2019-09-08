@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Rocktabulator Grid Class
  */
@@ -20,7 +22,7 @@ function RockTabulatorGrid(name) {
  * Get JSON from PHP and set all properties of the grid
  */
 RockTabulatorGrid.prototype.setDataProperties = function(data) {
-  for(prop in data) this[prop] = data[prop];
+  for(var prop in data) this[prop] = data[prop];
 }
 
 /**
@@ -40,25 +42,13 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
   // save grid instance
   var grid = this;
 
-  // where is the data stored?
-  var data;
-  switch (grid.type) {
-    case 'RockFinder2':
-      data = grid.data.data;
-      break;
-  
-    default:
-      data = grid.data;
-      break;
-  }
-
   // setup table config
   var defaults = {
     // Set data of the tabulator
     // We enable reactive data so that tabulator automatically updates whenever
     // the source data changes.
     reactiveData: true,
-    data: data,
+    data: grid.getTableData(),
     
     // set columns from datasource
     autoColumns: true,
@@ -77,6 +67,9 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
 
     // ajax callback that is triggered after every ajax request
     ajaxResponse:function(url, params, response) {
+      // check if that request is an internal request
+      // if not (eg external json) we do not modify the data
+      if(url != RockTabulator.url) return response;
       var data;
 
       // save response to grid
@@ -84,11 +77,12 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
 
       // check if response data is a tabulatorgrid data object
       if(typeof response == 'object') {
-        // // did we get an error?
-        // if(response.error) {
-        //   $(el).html('<div class="uk-alert-warning" uk-alert>'+response.error+'</div>');
-        //   return [];
-        // }
+        // did we get an error?
+        if(response.error) {
+          UIkit.notification('Error while loading data', {status:'danger'});
+          console.error(response.error);
+          return grid.getTableData(); // set old data
+        }
 
         // return data array
         if(response.type == 'sql') data = response.data;
@@ -123,6 +117,14 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
 }
 
 /**
+ * Get data array for the grid.
+ */
+RockTabulatorGrid.prototype.getTableData = function() {
+  if(this.type == 'RockFinder2') return this.data.data;
+  return this.data;
+}
+
+/**
  * AJAX reload data of this grid
  */
 RockTabulatorGrid.prototype.reload = function() {
@@ -134,7 +136,7 @@ RockTabulatorGrid.prototype.reload = function() {
 
   var grid = this;
   grid.table.setData(RockTabulator.url, {
-    name: this.name, // name of the grid
+    name: grid.name, // name of the grid
     lang: lang, // language id
   }, "post").then(function(response) {
     $(grid.getWrapper()).trigger('tableReady.RT', [grid]);
