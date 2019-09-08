@@ -35,6 +35,9 @@ $(document).on('gridReady.RT', function(event, grid) {
     });
   }
 
+  /**
+   * Render a single rowaction
+   */
   RockTabulatorGrid.prototype.renderRowaction = function(cell, action, options) {
     var grid = this;
     var options = options || {};

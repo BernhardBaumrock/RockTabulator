@@ -1,2 +1,0 @@
-<?php namespace ProcessWire;
-$inputfield->notes = 'Click on any row to fire the foo plugin';
