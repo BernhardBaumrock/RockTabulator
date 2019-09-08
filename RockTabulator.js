@@ -19,7 +19,7 @@ function RockTabulator() {
   /**
    * AJAX endpoint url
    */
-  this.url = '/rocktabulator/';
+  this.url = ProcessWire.config.urls.root+'rocktabulator/';
 
   /**
    * Init plugins
