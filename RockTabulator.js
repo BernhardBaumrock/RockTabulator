@@ -133,6 +133,5 @@ RockTabulator.prototype._ = function(name) {
 
 // ######################### init RockTabulator #########################
 var RockTabulator = new RockTabulator();
-$(document).trigger('loadPlugins.RT');
 $(document).trigger('ready.RT');
 // ######################################################################

@@ -1,0 +1,1 @@
+This example shows how to create and use plugins and formatters for your grids.

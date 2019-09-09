@@ -12,10 +12,6 @@ function RockTabulatorGrid(name) {
 
   // the tabulator instance
   this.table = null;
-
-  // how often was this grid rendered?
-  // important for ajax init callbacks
-  this.rendered = 0;
 }
 
 /**
@@ -23,6 +19,10 @@ function RockTabulatorGrid(name) {
  */
 RockTabulatorGrid.prototype.setDataProperties = function(data) {
   for(var prop in data) this[prop] = data[prop];
+  // trigger event so that other plugins can do their work
+  // eg rowactions must be converted from plain objects to Rowaction objects
+  // this must happen also after each ajax request
+  this.getWrapper().trigger('setDataProperties.RT', [this]);
 }
 
 /**

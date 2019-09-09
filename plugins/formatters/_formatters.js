@@ -3,57 +3,48 @@
 /**
  * RockTabulator Grid Formatter Support
  */
-$(document).on('loadPlugins.RT', function() {
-  var Formatters = function() {
-    this.data = {}
-  }
-
-  Formatters.prototype.add = function(name, callback, overwrite) {
-    var overwrite = overwrite || false;
-    var plugin = this.get(name);
-    if(plugin && !overwrite) return;
-    this.data[name] = callback;
-  }
-
-  Formatters.prototype.get = function(name) {
-    return this.data[name] || false;
-  }
-
-  /**
-   * Apply this formatter to the current cell
-   * 
-   * The apply method returns a callback that takes the cell as first argument
-   * and applies the value of that cell to the requested formatter.
-   * 
-   * RockTabulator formatters are designed to take the VALUE of the cell as
-   * first parameter and (if necessary) the cell as second. This makes it
-   * possible to combine multiple formatters at once and break logic into
-   * multiple reusable formatters (eg euro, bold, number).
-   */
-  Formatters.prototype.apply = function(name) {
-    var formatter = this.get(name);
-    return function(cell) {
-      return formatter(cell.getValue());
+$(document).on('gridReady.RT', function(event, grid) {
+  
+  class Formatter {
+    constructor() {
+      this.apply = function() {}
     }
   }
 
   /**
-   * Init formatters when a new grid is added to RockTabulator
+   * Add formatter to this grid
    */
-  $(document).on('gridReady.RT', function(e, grid) {
-    grid.formatters = new Formatters();
-    grid.getWrapper().trigger('formattersReady.RT', [grid]);
-  });
+  RockTabulatorGrid.prototype.addFormatter = function(name, callback, overwrite) {
+    var overwrite = overwrite || false;
+    
+    var exists = this.getFormatter(name);
+    if(exists && overwrite == false) {
+      alert('Formatter ' + name + ' already exists, adding it again is not possible!');
+      return;
+    }
+
+    var formatter = new Formatter();
+    formatter.apply = callback;
+    this.formatters[name] = formatter;
+  }
+  
+  /**
+   * Apply this formatter as formatter for tabulator
+   */
+  RockTabulatorGrid.prototype.applyFormatter = function(name) {
+    // get the formatter callback
+    var callback = this.getFormatter(name).apply;
+    return function(cell) { return callback(cell.getValue(), cell); }
+  }
 
   /**
-   * Add general formatters
+   * Get Formatter by name
    */
-  $(document).on('formattersReady.RT', function(e, grid) {
-    var formatters = grid.formatters;
+  RockTabulatorGrid.prototype.getFormatter = function(name) {
+    if(!name) return new Formatter();
+    return this.formatters[name] || false;
+  }
 
-    // formatters.add('foo', function() { ... });
-  });
-
-  // init formatters or main object
-  RockTabulator.formatters = new Formatters();
+  grid.formatters = {};
+  grid.getWrapper().trigger('formattersReady.RT', [grid]);
 });

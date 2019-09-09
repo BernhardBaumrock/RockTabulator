@@ -1,12 +1,8 @@
 'use strict';
-$(document).on('rowaction.RT', function(e, name, grid) {
+$(document).on('rowaction.RT', function(e, name, row, grid) {
   if(name != 'trash') return;
 
-  var $a = $(e.target).closest('a'); // link element
-  var grid = RockTabulator.getGrid(e.target);
-  var action = grid.rowactions[name];
-  var rowElement = $(e.target).closest('.tabulator-row')[0];
-  var row = grid.table.getRow(rowElement);
+  var action = grid.getRowaction(name);
   var msg = grid.replaceTags(action.confirm, row.getData());
   var spinner = '<i class="fa fa-spin fa-spinner"></i> ';
   var check = '<i class="fa fa-check"></i> ';
