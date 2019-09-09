@@ -9,7 +9,9 @@
 ?>
 <i class="fa fa-spin fa-spinner"></i>
 <script>
-var init = function() { RockTabulator.initGrid('<?= $id ?>', <?= $json ?>); }
-$(document).ajaxComplete(function() { init() }); // ajax inputfield
-$(window).load(function() { init() }); // opened inputfield
+(function() {
+  var init = function() { RockTabulator.initGrid('<?= $id ?>', <?= $json ?>); }
+  $(document).ajaxComplete(function() { init() }); // ajax inputfield
+  $(window).load(function() { init() }); // opened inputfield
+})();
 </script>

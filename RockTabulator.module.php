@@ -118,7 +118,7 @@ class RockTabulator extends RockMarkup2 {
     if(!$name) return;
 
     $url = $event->arguments(1);
-    if($url != $this->config->urls->root . 'rocktabulator/') return;
+    if($url != '/rocktabulator/') return;
 
     // ########## GET DATA ##########
     $langID = $langID = $this->input->post('lang', 'int');
