@@ -125,6 +125,16 @@ RockTabulatorGrid.prototype.getTableData = function() {
 }
 
 /**
+ * Get data array of one column
+ */
+RockTabulatorGrid.prototype.pluck = function(column, filterAndSort) {
+  var data = this.table.getData(filterAndSort);
+  var arr = [];
+  for(var i=0; i<data.length; i++) arr.push(data[i][column]);
+  return arr;
+}
+
+/**
  * AJAX reload data of this grid
  */
 RockTabulatorGrid.prototype.reload = function() {
