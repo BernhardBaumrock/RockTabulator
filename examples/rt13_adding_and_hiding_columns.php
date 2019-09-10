@@ -7,8 +7,9 @@
 $arr = [];
 for($i=0; $i<10; $i++) {
   $arr[] = (object)[
-    'foo' => "bar $i",
-    'bar' => "foo".$i*2,
+    'foo' => "foo $i",
+    'bar' => "bar ".$i*2,
+    'col-to-hide' => "hidden col $i",
   ];
 }
 $grid->setData($arr);
