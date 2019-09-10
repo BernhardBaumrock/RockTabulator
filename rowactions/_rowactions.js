@@ -131,9 +131,6 @@ $(document).on('gridReady.RT', function(event, grid) {
       },
     });
   }
-  
-  
-  
 });
 
 // handle clicks on rowactions

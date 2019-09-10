@@ -3,7 +3,7 @@
   margin: 0 2px;
   padding: 2px 5px;
   border-radius: 3px;
-  color: white;
+  color: white; /* todo: do not hardcode color! */
   text-decoration: none;
 }
 .rt-rowaction span.label {

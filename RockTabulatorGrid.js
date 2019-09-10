@@ -127,10 +127,29 @@ RockTabulatorGrid.prototype.getTableData = function() {
 /**
  * Get data array of one column
  */
-RockTabulatorGrid.prototype.pluck = function(column, filterAndSort) {
-  var data = this.table.getData(filterAndSort);
+RockTabulatorGrid.prototype.pluck = function(column, options) {
+  // get options
+  var options = $.extend({
+    filterAndSort: false,
+    distinct: false,
+  }, (options||{}));
+
+  // get data of table
+  var data = this.table.getData(options.filterAndSort);
+
+  // distinct values?
   var arr = [];
-  for(var i=0; i<data.length; i++) arr.push(data[i][column]);
+  for(var i=0; i<data.length; i++) {
+    var val = data[i][column];
+    var exists = arr.indexOf(val) > -1;
+
+    // if value already exists in array continue with next
+    if(options.distinct && exists) continue;
+
+    // add value to array
+    arr.push(val);
+  }
+
   return arr;
 }
 
@@ -138,6 +157,9 @@ RockTabulatorGrid.prototype.pluck = function(column, filterAndSort) {
  * AJAX reload data of this grid
  */
 RockTabulatorGrid.prototype.reload = function() {
+  // if the grid has a custom reload function call it
+  if(typeof this._reload == 'function') return this._reload();
+
   // prepare lang
   var lang = null;
   if(ProcessWire.config.LanguageSupport) {

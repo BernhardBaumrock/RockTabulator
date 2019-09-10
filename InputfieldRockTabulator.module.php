@@ -40,6 +40,7 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
     $this->config->scripts->add($this->rm->assetUrl("lib/moment.min.js"));
     $this->config->scripts->add($this->rm->assetUrl("tabulator/js/tabulator$min.js"));
     $this->config->styles->add($this->rm->assetUrl("tabulator/css/tabulator_simple$min.css"));
+    $this->config->styles->add($this->rm->assetUrl('RockTabulator.css'));
 
     // load assets
     foreach([__DIR__, $this->config->paths->assets.'RockTabulator'] as $dir) {
@@ -54,7 +55,6 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
 
     // load RockTabulator JavaScripts
     $this->config->scripts->add($this->rm->assetUrl('RockTabulator.js'));
-    $this->config->styles->add($this->rm->assetUrl('RockTabulator.css'));
     $this->config->scripts->add($this->rm->assetUrl('RockTabulatorGrid.js'));
     
     return parent::renderReady($parent, $renderValueMode);

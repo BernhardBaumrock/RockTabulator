@@ -7,7 +7,11 @@ $action->label = $this->_('Trash');
 $action->hover = $this->_('Trash this item');
 $action->confirm = $this->_('Do you really want to trash this item?');
 $action->href = $this->config->urls->root."rocktabulator/?rowaction=trash&id={id}";
-$action->access = function() { return true; };
+$action->access = function() {
+  // action is available to everybody
+  // further checks are done in the execute function
+  return true;
+};
 $action->execute = function() {
   // get id
   $id = $this->input->get('id', 'int');
