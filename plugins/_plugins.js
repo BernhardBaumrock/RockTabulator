@@ -35,3 +35,10 @@ $(document).on('gridReady.RT', function(event, grid) {
   grid.plugins = {};
   grid.getWrapper().trigger('pluginsReady.RT', [grid]);
 });
+
+/**
+ * Reload grid whenever a panel is closed and has class rt-reload
+ */
+$(document).on('pw-panel-closed', '.rt-reload', function() {
+  RockTabulator.getGrid(this).reload();
+});

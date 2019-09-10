@@ -14,11 +14,3 @@ $(document).on('rowaction.RT', function(e, name, container) {
   // open panel
   $(e.target).click();
 });
-
-$(document).on('pw-panel-closed', function(event, panel) {
-  var $panel = $(panel);
-  var $action = $panel.data('rowaction');
-  if(!$action.hasClass('rt-reload')) return;
-  var grid = RockTabulator.getGrid($action);
-  grid.reload();
-});
