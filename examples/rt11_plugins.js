@@ -46,6 +46,11 @@ $(document).on('formattersReady.RT', function(e, grid) {
     val = grid.getFormatter('danger').apply(val, cell);
     return val;
   });
+  
+  // you can also create formatters that take custom parameters
+  grid.addFormatter('custom-params', function(foo, bar, foobar) {
+    return foo + bar + foobar;
+  });
 });
 
 // ###################### external file end #################################
@@ -81,4 +86,14 @@ $(document).on('tableReady.RT', function(event, grid) {
   grid.setColdef('path', {
     formatter: grid.applyFormatter('bold-danger'),
   });
+
+  grid.table.addColumn({
+    title: 'custom params demo',
+    formatter: function(cell) {
+      var id = cell.getRow().getData().id;
+      return grid.getFormatter('custom-params')
+        .apply('foo!! ', 'bar?? ', 'foobar ('+id+')');
+    },
+  });
+
 });
