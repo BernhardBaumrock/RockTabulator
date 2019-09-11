@@ -32,17 +32,15 @@ $(document).on('gridReady.RT', function(event, grid) {
     return this.plugins[name] || false;
   }
 
+  /** ################### init plugins object ################### */
+  
   grid.plugins = {};
   grid.getWrapper().trigger('pluginsReady.RT', [grid]);
-});
 
-/**
- * Colorize rows based on status column
- */
-$(document).on('gridReady.RT', function(event, grid) {
-
+  /** ################### plugins attached to all grids ################### */
+  
   /**
-   * Update columns based on a colDefs array
+   * Colorize rows based on status column
    */
   RockTabulatorGrid.prototype.rowStatusColors = function(data) {
     var data = $.extend({
@@ -64,6 +62,35 @@ $(document).on('gridReady.RT', function(event, grid) {
         return val;
       },
     });
+  }
+  
+  /**
+   * Load given columns in a new object having column "indexname" as index
+   * 
+   * Usage:
+   * var clientdata = grid.getRowData('client', ['client:title=>title']);
+   */
+  RockTabulatorGrid.prototype.getRowData = function(indexname, columns, options) {
+    var columns = columns || [];
+    var options = $.extend({
+      filterAndSearch: true,
+    });
+
+    // loop all rows
+    var obj = {}
+    $.each(this.table.getData(options.filterAndSearch), function(i, row) {
+      var data = {}
+      $.each(columns, function(i, col) {
+        // does this column have an alias set?
+        var col = col.split('=>');
+        var name = col[0];
+        var alias = col[1] || name;
+        data[alias] = row[name];
+      });
+      obj[row[indexname]] = data;
+    });
+    
+    return obj;
   }
 });
 

@@ -33,7 +33,9 @@ $(document).on('gridReady.RT', function(event, grid) {
    */
   RockTabulatorGrid.prototype.applyFormatter = function(name) {
     // get the formatter callback
-    var callback = this.getFormatter(name).apply;
+    var callback = this.getFormatter(name).apply || function() {
+      console.warn("formatter " + name + " not found");
+    };
     return function(cell) { return callback(cell.getValue(), cell); }
   }
 
@@ -45,6 +47,24 @@ $(document).on('gridReady.RT', function(event, grid) {
     return this.formatters[name] || false;
   }
 
+  /** ################### init formatters object ################### */
+
   grid.formatters = {};
   grid.getWrapper().trigger('formattersReady.RT', [grid]);
+
+  /** ################### global formatters ################### */
+
+  grid.addFormatter('open-in-panel', function(data) {
+    var row = data.cell.getRow().getData();
+    var id = row[data.col];
+    var href = ProcessWire.config.urls.admin + 'page/edit/?id='+id;
+    if(data.fields) href += '&fields=' + data.fields;
+    var action = grid.getRowaction({
+      name: 'panel',
+      icon: 'search',
+      class: 'show-on-hover rt-reload',
+      href,
+    }).render(data.cell);
+    return action + data.val;
+  });
 });
