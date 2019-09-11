@@ -240,7 +240,12 @@ class RockTabulator extends RockMarkup2 {
     $access = false;
     $msg = 'NO ACCESS';
     try {
-      $access = $grid->access();
+      if(is_string($grid->access)) {
+        // access to this grid was set as STRING (= permission name)
+        // this means that we check if the current user has the permission
+        $access = $this->user->hasPermission($grid->access);
+      }
+      else $access = $grid->access();
     } catch (\Throwable $th) {
       $msg = $th->getMessage();
       $access = false;
