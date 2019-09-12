@@ -156,7 +156,16 @@ RockTabulatorGrid.prototype.pluck = function(column, options) {
 /**
  * AJAX reload data of this grid
  */
-RockTabulatorGrid.prototype.reload = function() {
+RockTabulatorGrid.prototype.reload = function(options) {
+  if(options === true) options = {msg: true};
+  var options = options || {}
+
+  // show reload message?
+  var notify;
+  if(options.msg) {
+    notify = UIkit.notification("Reloading data...");
+  }
+
   // if the grid has a custom reload function call it
   if(typeof this._reload == 'function') return this._reload();
 
@@ -172,6 +181,7 @@ RockTabulatorGrid.prototype.reload = function() {
     lang: lang, // language id
   }, "post").then(function(response) {
     $(grid.getWrapper()).trigger('tableReady.RT', [grid]);
+    notify.close();
   });
 }
 
@@ -272,5 +282,5 @@ RockTabulatorGrid.prototype.replaceTags = function(string, data, tags) {
  * it looks in the global translations object
  */
 RockTabulatorGrid.prototype._ = function(name) {
-  return this.lang[name] || RockTabulator._(name);
+  return this.lang[name] || RockTabulator._(name) || name;
 }

@@ -1,5 +1,5 @@
 <?php namespace ProcessWire;
-return [
+$langs = [
   // tabulator translations
   'pagination' => [
     "page_size" => __("Page Size"),
@@ -18,3 +18,21 @@ return [
 
   // rocktabulator translations
 ];
+
+// is a user language file set?
+$dir = $this->config->paths->assets . "RockTabulator";
+$file = "$dir/_langs.php";
+if(is_file($file)) {
+  $userlangs = $this->wire->files->render(
+    $file,
+    ['defaults' => $langs],
+    ['allowedPaths' => [$dir]
+  ]);
+  if(!is_array($userlangs)) {
+    throw new WireException("_langs.php must return an array");
+  }
+}
+else $userlangs = [];
+
+// return joined array
+return array_merge($langs, $userlangs);

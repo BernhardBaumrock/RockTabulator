@@ -9,11 +9,11 @@ class RockTabulator extends RockMarkup2 {
   public static function getModuleInfo() {
     return [
       'title' => 'RockTabulator Main Module',
-      'version' => '0.0.2',
+      'version' => '0.0.3',
       'summary' => 'RockTabulator Main Module that installs and uninstalls all related modules.',
       'singular' => true,
       'autoload' => true,
-      'icon' => 'bolt',
+      'icon' => 'table',
       'requires' => ['RockMarkup2'],
       'installs' => [
         'FieldtypeRockTabulator',
@@ -105,6 +105,24 @@ class RockTabulator extends RockMarkup2 {
     $this->loadLocales();
     $data = $this->conf->getArray();
     $this->wire->config->js('RockTabulator', $data);
+  }
+
+  /**
+   * Return links pointing to the PW translation GUI for given file
+   */
+  public function getTranslationlinks($file) {
+    if(!is_file($file)) return;
+    $file = base64_encode($file);
+    $links = "<i class='fa fa-language'></i> Translate file to ";
+    $del = '';
+    foreach($this->wire->languages as $l) {
+      // don't skip default language!
+      // important when default language is not english
+      $translateurl = "./translate/?file=$file&lang=$l";
+      $links .= $del."<a href='$translateurl' class='pw-panel pw-panel-reload'>{$l->title}</a>";
+      $del = ', ';
+    }
+    return $links;
   }
 
   /**

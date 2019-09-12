@@ -14,7 +14,7 @@ function RockTabulator() {
   /**
    * Array of all grids
    */
-  this.grids = [];
+  this.grids = {};
 
   /**
    * AJAX endpoint url
@@ -97,7 +97,7 @@ RockTabulator.prototype.addGrid = function(name, data) {
   var grid = new RockTabulatorGrid(name);
 
   $.extend(grid, data); // load data from php json string
-  this.grids.push(grid); // push grid to array
+  this.grids[name] = grid; // push grid to array
   $(document).trigger('gridReady.RT', [grid]); // trigger event
   
   // save table instance globally when we are in the sandbox
@@ -111,8 +111,9 @@ RockTabulator.prototype.addGrid = function(name, data) {
  * Return grid by name or dom element
  */
 RockTabulator.prototype.getGrid = function(name) {
-  for(var i=0; i<this.grids.length; i++) {
-    if(this.grids[i].name == name) return this.grids[i];
+  if(typeof name == 'string') {
+    var grid = this.grids[name];
+    if(grid) return grid;
   }
 
   // if the grid was not found yet try to find it via jquery

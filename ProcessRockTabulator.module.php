@@ -29,5 +29,26 @@ class ProcessRockTabulator extends ProcessRockMarkup2 {
   public function init() {
     parent::init();
     $this->config->js('sandbox', true);
+
+    $this->addHookAfter('getSandboxForm', $this, 'showTranslations');
+  }
+
+  /**
+   * Add info about translations for RockTabulator
+   * @param HookEvent $event
+   * @return void
+   */
+  public function showTranslations($event) {
+    $form = &$event->return;
+
+    $form->add([
+      'type' => 'markup',
+      'label' => 'Translations',
+      'icon' => 'language',
+      'value' => $this->files->render(__DIR__ . '/views/translations.php', [
+        'main' => $this->main(),
+      ]),
+      'notes' => "Use RockTabulator._('foo') to get the translated value of foo",
+    ]);
   }
 }
