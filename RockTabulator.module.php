@@ -78,6 +78,23 @@ class RockTabulator extends RockMarkup2 {
     if(!$locale) return;
 
     $data = $this->wire->files->render(__DIR__ . '/_langs.php');
+
+    // is a user language file set?
+    $dir = $this->config->paths->assets . "RockTabulator";
+    $file = "$dir/_langs.php";
+    if(is_file($file)) {
+      $userlangs = $this->wire->files->render(
+        $file,
+        ['defaults' => $data],
+        ['allowedPaths' => [$dir]
+      ]);
+      if(!is_array($userlangs)) {
+        throw new WireException("_langs.php must return an array");
+      }
+    }
+    else $userlangs = [];
+    $data = array_merge($data, $userlangs);
+
     $this->conf->set('locale', $locale);
     $this->conf->set('langs', [$locale => $data]);
   }
