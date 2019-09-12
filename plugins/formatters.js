@@ -62,7 +62,7 @@ $(document).on('gridReady.RT', function(event, grid) {
     var action = grid.getRowaction({
       name: 'panel',
       icon: 'search',
-      class: 'show-on-hover rt-reload',
+      class: 'rt-reload',
       href,
     }).render(data.cell);
     return action + data.val;

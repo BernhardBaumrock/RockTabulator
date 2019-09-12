@@ -181,7 +181,7 @@ RockTabulatorGrid.prototype.reload = function(options) {
     lang: lang, // language id
   }, "post").then(function(response) {
     $(grid.getWrapper()).trigger('tableReady.RT', [grid]);
-    notify.close();
+    if(notify) notify.close();
   });
 }
 
