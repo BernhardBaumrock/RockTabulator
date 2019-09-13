@@ -159,7 +159,7 @@ RockTabulatorGrid.prototype.pluck = function(column, options) {
 RockTabulatorGrid.prototype.getRelationItem = function(relationname, id) {
   var rel = this.data.relations[relationname];
   this.populateRelationData(rel);
-  return this.relationData[id];
+  return rel.relationData[id];
 }
 
 /**
@@ -175,7 +175,7 @@ RockTabulatorGrid.prototype.populateRelationData = function(relation) {
     var row = rows[i];
     data[row.id] = row;
   }
-  this.relationData = data;
+  relation.relationData = data;
 }
 
 /**

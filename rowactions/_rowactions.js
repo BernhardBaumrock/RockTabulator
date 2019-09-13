@@ -40,7 +40,8 @@ $(document).on('gridReady.RT', function(event, grid) {
     var action = $.extend({}, action, options);
 
     // setup url
-    var href = grid.replaceTags(action.href, cell.getRow().getData(), action.replace);
+    var href = action.href;
+    if(cell) href = grid.replaceTags(action.href, cell.getRow().getData(), action.replace);
     if(action.fields) href += '&fields=' + action.fields;
 
     // setup class
