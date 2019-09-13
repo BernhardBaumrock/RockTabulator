@@ -154,6 +154,31 @@ RockTabulatorGrid.prototype.pluck = function(column, options) {
 }
 
 /**
+ * Get relation data item
+ */
+RockTabulatorGrid.prototype.getRelationItem = function(relationname, id) {
+  var rel = this.data.relations[relationname];
+  this.populateRelationData(rel);
+  return this.relationData[id];
+}
+
+/**
+ * Populate relation data cache object
+ */
+RockTabulatorGrid.prototype.populateRelationData = function(relation) {
+  if(this.relationData) return;
+
+  // create data
+  var rows = relation.data;
+  var data = {}
+  for(var i=0; i<rows.length; i++) {
+    var row = rows[i];
+    data[row.id] = row;
+  }
+  this.relationData = data;
+}
+
+/**
  * AJAX reload data of this grid
  */
 RockTabulatorGrid.prototype.reload = function(options) {
