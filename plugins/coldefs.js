@@ -24,19 +24,44 @@ $(document).on('pluginsReady.RT', function(event, grid) {
   });
 
   /**
-   * Show relation data as page title
+   * Show page id as title + panel link
    */
-  grid.addPlugin('def.relation', function(name, options) {
+  grid.addPlugin('def.page', function(name, options) {
     var options = $.extend({
       default: true, // apply default coldef?
-      col: 'title', // column to return as text
       id: 'id', // id of page to open
-      relation: name,
+      col: null, // column name holding page title
+      relation: false,
     }, options);
 
     // apply default formatter
     if(options.default) grid.getPlugin('def.default')(name);
 
+    // setup relation
+    var relation = false;
+    if(options.relation === true) relation = name;
+    else if(options.relation) relation = options.relation;
+
+    // get text for given id of page
+    var idToText = function(id, rowData) {
+      if(relation) {
+        // get page title from relation
+        var obj = grid.getRelationItem(relation, id);
+
+        // if no column is set we take the title property of the relation
+        var col = options.col || 'title';
+
+        if(obj) return obj[col];
+      }
+      else {
+        // if no column is set we take the name:title column
+        var col = options.col || name+':title';
+        return rowData[col];
+      }
+      return false;
+    }
+
+    // setup filter
     function customHeaderFilter(headerValue, rowValue, rowData, filterParams){
       // get relation data
       var ids = rowData[name];
@@ -44,10 +69,8 @@ $(document).on('pluginsReady.RT', function(event, grid) {
 
       var str = '';
       $.each(ids.split(','), function(i, id) {
-        var item = grid.getRelationItem(options.relation, id);
-        str += ' ' + item[options.col];
+        str += ' ' + idToText(id, rowData);
       });
-
       var search = headerValue.toLowerCase();
       var str = str.toLowerCase();
   
@@ -64,7 +87,8 @@ $(document).on('pluginsReady.RT', function(event, grid) {
         var out = '';
         var del = '';
         $.each(val, function(i, id) {
-          var item = grid.getRelationItem(options.relation, id);
+          var rowData = cell.getRow().getData();
+          var item = idToText(id, rowData);
           if(!item) return;
 
           // add panel link icon
@@ -76,7 +100,7 @@ $(document).on('pluginsReady.RT', function(event, grid) {
             href,
           }).render();
 
-          out += del + action + item[options.col];
+          out += del + action + item;
 
           del = '<br>';
         });
