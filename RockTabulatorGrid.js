@@ -199,12 +199,21 @@ RockTabulatorGrid.prototype.reload = function(options) {
   if(ProcessWire.config.LanguageSupport) {
     lang = ProcessWire.config.LanguageSupport.language.id;
   }
-
+  
+  // setup grid variable
   var grid = this;
-  grid.table.setData(RockTabulator.url, {
+
+  // get payload for this ajax request
+  // this is necessary if a grid shows only junks of data
+  // eg show all entries of one year
+  var payload = {
     name: grid.name, // name of the grid
     lang: lang, // language id
-  }, "post").then(function(response) {
+  }
+  if(typeof grid.addPayload == 'function') payload = grid.addPayload(payload);
+
+  // send request
+  grid.table.setData(RockTabulator.url, payload, "post").then(function(response) {
     $(grid.getWrapper()).trigger('tableReady.RT', [grid]);
     if(notify) notify.close();
   });
