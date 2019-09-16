@@ -31,7 +31,7 @@ $(document).on('pluginsReady.RT', function(event, grid) {
       default: true, // apply default coldef?
       id: 'id', // id of page to open
       col: null, // column name holding page title
-      relation: false, // is this a joined page or a relation?
+      relation: null, // is this a joined page or a relation?
       hideTitle: true, // hide title column?
       width: null,
     }, options);
@@ -41,8 +41,12 @@ $(document).on('pluginsReady.RT', function(event, grid) {
 
     // setup relation
     var relation = false;
-    if(options.relation === true) relation = name;
-    else if(options.relation) relation = options.relation;
+    if(grid.data.relations && grid.data.relations[name]) {
+      relation = grid.data.relations[name];
+    }
+
+    if(options.relation) relation = options.relation;
+    else if(options.relation === false) relation = false;
     
     // get title column
     var col = options.col || 'title';
@@ -50,7 +54,10 @@ $(document).on('pluginsReady.RT', function(event, grid) {
 
     // get text for given id of page
     var idToText = function(id, rowData) {
-      if(relation) {
+      if(relation.relationData) {
+        return relation.relationData[id][col];
+      }
+      else if(relation) {
         // get page title from relation
         var obj = grid.getRelationItem(relation, id);
         if(obj) return obj[col];

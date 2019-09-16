@@ -162,15 +162,18 @@ RockTabulatorGrid.prototype.pluck = function(column, options) {
 RockTabulatorGrid.prototype.getRelationItem = function(relationname, id) {
   var rel = this.data.relations[relationname];
   if(!rel) console.warn('relation not found', relationname);
-  this.populateRelationData(rel);
-  return rel.relationData[id];
+  return this.getRelationData(rel)[id];
 }
 
 /**
  * Populate relation data cache object
  */
-RockTabulatorGrid.prototype.populateRelationData = function(relation) {
-  if(this.relationData) return;
+RockTabulatorGrid.prototype.getRelationData = function(relation) {
+  if(this.relationData) return this.relationData;
+
+  if(typeof relation == 'string') {
+    relation = this.data.relations[relation];
+  }
 
   // create data
   var rows = relation.data;
@@ -180,6 +183,7 @@ RockTabulatorGrid.prototype.populateRelationData = function(relation) {
     data[row.id] = row;
   }
   relation.relationData = data;
+  return data;
 }
 
 /**
