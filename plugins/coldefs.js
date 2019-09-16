@@ -33,6 +33,7 @@ $(document).on('pluginsReady.RT', function(event, grid) {
       col: null, // column name holding page title
       relation: false, // is this a joined page or a relation?
       hideTitle: true, // hide title column?
+      width: null,
     }, options);
 
     // apply default formatter
@@ -78,6 +79,7 @@ $(document).on('pluginsReady.RT', function(event, grid) {
 
     // set coldef
     grid.setColdef(name, {
+      width: options.width,
       formatter: function(cell) {
         var val = cell.getValue();
         if(!val) return;

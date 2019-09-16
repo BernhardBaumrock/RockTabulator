@@ -161,6 +161,7 @@ RockTabulatorGrid.prototype.pluck = function(column, options) {
  */
 RockTabulatorGrid.prototype.getRelationItem = function(relationname, id) {
   var rel = this.data.relations[relationname];
+  if(!rel) console.warn('relation not found', relationname);
   this.populateRelationData(rel);
   return rel.relationData[id];
 }
