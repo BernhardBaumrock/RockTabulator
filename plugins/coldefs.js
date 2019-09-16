@@ -58,6 +58,8 @@ $(document).on('pluginsReady.RT', function(event, grid) {
         return relation.relationData[id][col];
       }
       else if(relation) {
+        if(relation === true) relation = name;
+        
         // get page title from relation
         var obj = grid.getRelationItem(relation, id);
         if(obj) return obj[col];
