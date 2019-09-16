@@ -37,7 +37,7 @@ $(document).on('pluginsReady.RT', function(event, grid) {
     }, options);
 
     // apply default formatter
-    if(options.default) grid.getPlugin('def.default')(name);
+    if(options.default) grid.getPlugin('def.default')(name, options);
 
     // setup relation
     var relation = false;
