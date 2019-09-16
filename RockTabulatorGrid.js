@@ -33,7 +33,8 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
   var options = options || {};
 
   // find DOM element for current grid
-  var $el = this.getInputfield().find('.RockTabulator');
+  var $field = this.getInputfield();
+  var $el = $field.find('.RockTabulator');
   if(!$el.length) {
     alert('init of table failed, element with class RockTabulator not found');
     return;
@@ -49,6 +50,8 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
     // the source data changes.
     reactiveData: true,
     data: grid.getTableData(),
+    placeholder:grid._('no-data'),
+    paginationElement: $field.find('.pagination')[0],
     
     // set columns from datasource
     autoColumns: true,

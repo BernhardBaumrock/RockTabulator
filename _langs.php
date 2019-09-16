@@ -17,4 +17,5 @@ return [
   ],
 
   // rocktabulator translations
+  "no-data" => __('No Data Available'),
 ];

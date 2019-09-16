@@ -31,7 +31,8 @@ $(document).on('pluginsReady.RT', function(event, grid) {
       default: true, // apply default coldef?
       id: 'id', // id of page to open
       col: null, // column name holding page title
-      relation: false,
+      relation: false, // is this a joined page or a relation?
+      hideTitle: true, // hide title column?
     }, options);
 
     // apply default formatter
@@ -41,21 +42,19 @@ $(document).on('pluginsReady.RT', function(event, grid) {
     var relation = false;
     if(options.relation === true) relation = name;
     else if(options.relation) relation = options.relation;
+    
+    // get title column
+    var col = options.col || 'title';
+    if(!relation) col = options.col || name+':title';
 
     // get text for given id of page
     var idToText = function(id, rowData) {
       if(relation) {
         // get page title from relation
         var obj = grid.getRelationItem(relation, id);
-
-        // if no column is set we take the title property of the relation
-        var col = options.col || 'title';
-
         if(obj) return obj[col];
       }
       else {
-        // if no column is set we take the name:title column
-        var col = options.col || name+':title';
         return rowData[col];
       }
       return false;
@@ -109,6 +108,8 @@ $(document).on('pluginsReady.RT', function(event, grid) {
       },
       headerFilterFunc:customHeaderFilter
     });
+    
+    // hide title column if that was a join
+    if(!relation && options.hideTitle) grid.setColdef(col, {visible:false});
   });
-
 });

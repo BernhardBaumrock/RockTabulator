@@ -1,4 +1,12 @@
 .RockTabulatorWrapper { position: relative; }
+.RockTabulatorWrapper .pagination { font-size: 12px; }
+.RockTabulatorWrapper .pagination button,
+.RockTabulatorWrapper .pagination select {
+  border: 1px solid #afafaf;
+  border-radius: 3px;
+  background: transparent;
+}
+.RockTabulatorWrapper .pagination select { margin-right: 8px; margin-left: 4px; }
 
 /* background colors, taken from tailwindcss */
 .tabulator-row.bg-transparent, .bg-transparent {	background-color: transparent; }
