@@ -109,6 +109,17 @@ $(document).on('rendered.RT', function(event, grid) {
 });
 
 /**
+ * Cell click filter
+ */
+$(document).on('cellClick.RT', function(event, e, cell) {
+  if(e.ctrlKey) {
+    var val = $(cell.getElement()).text();
+    var col = cell.getColumn()._column.field;
+    cell.getTable().setHeaderFilterValue(col, val);
+  }
+});
+
+/**
  * Reload grid whenever a panel is closed and has class rt-reload
  */
 $(document).on('pw-panel-closed', '.rt-reload', function() {

@@ -116,16 +116,7 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
 
     // callbacks
     cellClick: function(e, cell) {
-      if(e.shiftKey) {
-      }
-      if(e.ctrlKey) {
-        var val = $(cell.getElement()).text();
-        var col = cell.getColumn()._column.field;
-        grid.table.setHeaderFilterValue(col, val);
-      }
-      if(e.altKey) {
-        console.log('alt click');
-      }
+      $(grid.getWrapper()).trigger('cellClick.RT', [e, cell]);
     },
 
     // trigger debounced rendered callback
