@@ -22,6 +22,43 @@ $(document).on('pluginsReady.RT', function(event, grid) {
       },
     });
   });
+  
+  /**
+   * Options ID to Text
+   */
+  grid.addPlugin('def.options', function(name, options) {
+    var options = $.extend({
+      headerFilter: true,
+      formatter,
+    }, options);
+
+    var getText = function(id) {
+      var items = options.items || grid.data.options[name];
+      return items[id];
+    }
+
+    grid.setColdef(name, {
+      headerFilter:options.headerFilter,
+      title: options.title || grid._(name),
+      width: options.width,
+      formatter: function(cell) {
+        var val = cell.getValue()*1;
+        
+        var icon = 'comment-o';
+        if(val === 2) icon = 'phone';
+        if(val === 3) icon = 'flag-o';
+        if(val === 4) icon = 'envelope-o';
+        icon = '<span class="cellicon"><i class="fa fa-'+icon+'"></i></span>';
+
+        return icon + getText(val);
+      },
+      headerFilterFunc: function(headerValue, rowValue, rowData, filterParams){
+        var str = getText(rowValue).toLowerCase();
+        var search = headerValue.toLowerCase();
+        return str.indexOf(search) >= 0;
+      },
+    });
+  });
 
   /**
    * Show page id as title + panel link
