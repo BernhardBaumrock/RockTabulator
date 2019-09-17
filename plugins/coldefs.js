@@ -30,11 +30,18 @@ $(document).on('pluginsReady.RT', function(event, grid) {
     var options = $.extend({
       headerFilter: true,
       formatter,
+      icons: {},
     }, options);
 
     var getText = function(id) {
       var items = options.items || grid.data.options[name];
       return items[id];
+    }
+
+    var getIcon = function(val) {
+      var icon = options.icons[val];
+      if(!icon) return '';
+      return '<span class="cellicon"><i class="fa fa-'+icon+'"></i></span>';
     }
 
     grid.setColdef(name, {
@@ -43,13 +50,7 @@ $(document).on('pluginsReady.RT', function(event, grid) {
       width: options.width,
       formatter: function(cell) {
         var val = cell.getValue()*1;
-        
-        var icon = 'comment-o';
-        if(val === 2) icon = 'phone';
-        if(val === 3) icon = 'flag-o';
-        if(val === 4) icon = 'envelope-o';
-        icon = '<span class="cellicon"><i class="fa fa-'+icon+'"></i></span>';
-
+        var icon = getIcon(val);
         return icon + getText(val);
       },
       headerFilterFunc: function(headerValue, rowValue, rowData, filterParams){
