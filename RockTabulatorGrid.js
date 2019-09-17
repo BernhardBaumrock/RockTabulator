@@ -43,6 +43,11 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
   // save grid instance
   var grid = this;
 
+  // rendered debounce
+  var rendered = RockMarkup2.debounce(function() {
+    grid.getWrapper().trigger('rendered.RT', [grid]);
+  }, 100);
+
   // setup table config
   var defaults = {
     // Set data of the tabulator
@@ -108,6 +113,23 @@ RockTabulatorGrid.prototype.initTable = function(config, options) {
       grid.getWrapper().trigger('tableReady.RT', [grid]);
       return data || [];
     },
+
+    // callbacks
+    cellClick: function(e, cell) {
+      if(e.shiftKey) {
+      }
+      if(e.ctrlKey) {
+        var val = $(cell.getElement()).text();
+        var col = cell.getColumn()._column.field;
+        grid.table.setHeaderFilterValue(col, val);
+      }
+      if(e.altKey) {
+        console.log('alt click');
+      }
+    },
+
+    // trigger debounced rendered callback
+    renderComplete:rendered,
   }
 
   // load defaults?

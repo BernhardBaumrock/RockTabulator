@@ -95,6 +95,20 @@ $(document).on('gridReady.RT', function(event, grid) {
 });
 
 /**
+ * Show row count
+ */
+$(document).on('rendered.RT', function(event, grid) {
+  // get row cound
+  var table = grid.table;
+  if(!table) return;
+  var all = table.getDataCount();
+  var filtered = table.getDataCount(true);
+  var $el = grid.getWrapper().find('.rowcount');
+  if(!$el.length) return;
+  $el.html("<strong>" + filtered + "</strong> / " + all);
+});
+
+/**
  * Reload grid whenever a panel is closed and has class rt-reload
  */
 $(document).on('pw-panel-closed', '.rt-reload', function() {
