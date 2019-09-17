@@ -92,7 +92,9 @@ $(document).on('pluginsReady.RT', function(event, grid) {
     // get text for given id of page
     var idToText = function(id, rowData) {
       if(relation.relationData) {
-        return relation.relationData[id][col];
+        var data = relation.relationData[id];
+        if(!data) return;
+        return data[col];
       }
       else if(relation) {
         if(relation === true) relation = name;
@@ -127,9 +129,8 @@ $(document).on('pluginsReady.RT', function(event, grid) {
     grid.setColdef(name, {
       width: options.width,
       formatter: function(cell) {
-        var val = cell.getValue();
+        var val = cell.getValue()+"";
         if(!val) return;
-        
         val = val.split(',');
         var out = '';
         var del = '';

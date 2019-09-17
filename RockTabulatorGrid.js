@@ -200,7 +200,12 @@ RockTabulatorGrid.prototype.reload = function(options) {
   }
 
   // if the grid has a custom reload function call it
-  if(typeof this._reload == 'function') return this._reload();
+  if(typeof this._reload == 'function') {
+    var exit = this._reload(options);
+    
+    // if the custom reload function returns FALSE we continue with execution
+    if(exit !== false) return;
+  }
 
   // prepare lang
   var lang = null;
