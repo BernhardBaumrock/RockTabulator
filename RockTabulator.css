@@ -8,7 +8,7 @@
 }
 .RockTabulatorWrapper .pagination .active { font-weight: bold; border-color: black; }
 .RockTabulatorWrapper .pagination select { margin-right: 8px; margin-left: 4px; }
-.RockTabulatorWrapper .rowcount { margin-right: 8px; font-size: 12px; }
+.RockTabulatorWrapper .rowcount {margin-left: 8px;font-size: 12px;}
 
 /* background colors, taken from tailwindcss */
 .tabulator-row.bg-transparent, .bg-transparent {	background-color: transparent; }
