@@ -145,7 +145,7 @@ $(document).on('pluginsReady.RT', function(event, grid) {
           var action = grid.getRowaction({
             name: 'panel',
             icon: 'search',
-            class: 'rt-reload bg-gray-500',
+            class: 'bg-gray-500',
             href,
           }).render();
 
