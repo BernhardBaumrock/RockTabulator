@@ -1,4 +1,5 @@
 <div class="RockTabulatorWrapper">
+  <div class="filter uk-margin-small-bottom"><?= $tabulator->topMarkup() ?></div>
   <div class="header uk-margin-small-bottom uk-child-width-1-2@m" uk-grid>
     <div class="uk-text-center uk-text-left@m">
       <span class="pagination"></span>

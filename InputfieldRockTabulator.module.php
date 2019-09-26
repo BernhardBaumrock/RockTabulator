@@ -26,6 +26,9 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
   public function init() {
     parent::init();
     $this->rt = $this->modules->get('RockTabulator');
+
+    $this->grid = null;
+    $this->err = null;
   }
 
   /**
@@ -61,22 +64,44 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
   }
 
   /**
-   * Render init tag
-   * @return string
+   * Get grid for this Inputfield
+   * @return RockTabulatorGrid|false
    */
-  public function initTag() {
+  public function getGrid() {
+    if($this->grid) return $this->grid;
+
     // get json object from this grid's data object
     try {
       $grid = $this->main->getGrid($this->name);
       if(!$grid) $grid = new RockTabulatorGrid($this->name);
     } catch (\Throwable $th) {
-      return '<div class="uk-alert-warning" uk-alert>'.$th->getMessage().'</div>';
+      $this->err = '<div class="uk-alert-warning" uk-alert>'.$th->getMessage().'</div>';
     }
+    return $grid;
+  }
 
+  /**
+   * Render init tag
+   * @return string
+   */
+  public function initTag() {
+    $grid = $this->getGrid();
+    if($this->err) return $this->err;
+    if(!$grid) return 'no grid found';
     return $this->tpl('_initTag.php', [
       'id' => "#".$this->id,
       'json' => $grid->getJSON(),
     ]);
+  }
+
+  /**
+   * Show top markup
+   * @return string|void
+   */
+  public function topMarkup() {
+    $grid = $this->getGrid();
+    if(!$grid) return;
+    return $grid->topMarkup ?: '';
   }
 
   /**
