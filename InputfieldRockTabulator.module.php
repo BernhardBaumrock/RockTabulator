@@ -71,6 +71,7 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
     if($this->grid) return $this->grid;
 
     // get json object from this grid's data object
+    $grid = false;
     try {
       $grid = $this->main->getGrid($this->name);
       if(!$grid) $grid = new RockTabulatorGrid($this->name);

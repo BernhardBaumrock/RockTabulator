@@ -187,6 +187,7 @@ RockTabulatorGrid.prototype.getRelationData = function(relation) {
   if(typeof relation == 'string') {
     relation = this.data.relations[relation];
   }
+  if(!relation) return [];
 
   // create data
   var rows = relation.data;
