@@ -54,6 +54,9 @@ RockTabulator.prototype.initGrid = function(el, data) {
   }
   el = $el[0];
 
+  // show header
+  $el.find(".RockTabulatorWrapper > .top").removeClass('uk-hidden');
+
   // save it to the grid
   var name = el.id.replace('Inputfield_', '');
   var grid = RockTabulator.getGrid(name);
