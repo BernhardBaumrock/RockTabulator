@@ -46,6 +46,12 @@ class RockTabulator extends RockMarkup2 {
    */
   public $conf;
 
+  /**
+   * Cached grid objects
+   * @var array
+   */
+  private $grids = [];
+
   public function __construct() {
     // populate defaults, which will get replaced with actual
     // configured values before the init/ready methods are called
@@ -248,21 +254,25 @@ class RockTabulator extends RockMarkup2 {
     if(!$name) $name = $this->input->get('name', 'string');
     if(!$name) return;
 
-    // early exit for rockfinder2 sandbox as no file exists there
-    if($name == 'rockfinder2_sandbox') return;
+    // try to get grid from cache
+    if(array_key_exists($name, $this->grids)) $grid = $this->grids[$name];
+    else {
+      // early exit for rockfinder2 sandbox as no file exists there
+      if($name == 'rockfinder2_sandbox') return;
 
-    // set loadRows flag in session
-    $this->session->loadTabulatorRows = $loadRows;
+      // set loadRows flag in session
+      $this->session->loadTabulatorRows = $loadRows;
 
-    // get file and load data
-    $file = $this->getFile($name);
-    if(!$file) throw new WireException("No grid data for $name");
-    
-    $grid = $this->wire->files->render($file->path, [
-      'grid' => new RockTabulatorGrid($file->name),
-    ], [
-      'allowedPaths' => [$file->dir],
-    ]);
+      // get file and load data
+      $file = $this->getFile($name);
+      if(!$file) throw new WireException("No grid data for $name");
+      
+      $grid = $this->wire->files->render($file->path, [
+        'grid' => new RockTabulatorGrid($file->name),
+      ], [
+        'allowedPaths' => [$file->dir],
+      ]);
+    }
 
     // if the php file does not return a grid we exit here
     if(!$grid instanceof RockTabulatorGrid) return;
@@ -294,6 +304,7 @@ class RockTabulator extends RockMarkup2 {
     }
 
     // all good, return data
+    $this->grids[$name] = $grid;
     return $grid;
   }
   

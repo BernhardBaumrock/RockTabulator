@@ -13,4 +13,11 @@ for($i=0; $i<10; $i++) {
 }
 $grid->setData($arr);
 
+for($i=1; $i<=3; $i++) {
+  $b = $this->modules->get('InputfieldButton');
+  $b->icon = 'bolt';
+  $b->value = "FOO $i";
+  $grid->topMarkup .= $b->render();
+};
+
 return $grid;
