@@ -7,6 +7,7 @@
  * @link https://www.baumrock.com
  */
 require_once('RockTabulatorGrid.php');
+if(!$this->modules->isInstalled("InputfieldRockMarkup2")) return;
 class InputfieldRockTabulator extends InputfieldRockMarkup2 {
 
   public static function getModuleInfo() {

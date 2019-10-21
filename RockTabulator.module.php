@@ -5,6 +5,10 @@
  * @author Bernhard Baumrock, 15.07.2019
  * @license Licensed under MIT
  */
+if(!$this->modules->isInstalled("RockMarkup2")) {
+  $this->error("Install RockMarkup2 to use RockTabulator!");
+  return;
+}
 class RockTabulator extends RockMarkup2 {
   public static function getModuleInfo() {
     return [
@@ -135,6 +139,7 @@ class RockTabulator extends RockMarkup2 {
    */
   public function getTranslationlinks($file) {
     if(!is_file($file)) return;
+    if(!is_array($this->wire->languages)) return;
     $file = base64_encode($file);
     $links = "<i class='fa fa-language'></i> Translate file to ";
     $del = '';

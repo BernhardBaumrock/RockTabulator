@@ -6,6 +6,7 @@
  * @license Licensed under MIT
  * @link https://www.baumrock.com
  */
+if(!$this->modules->isInstalled("FieldtypeRockMarkup2")) return;
 class FieldtypeRockTabulator extends FieldtypeRockMarkup2 {
 
   public static function getModuleInfo() {
