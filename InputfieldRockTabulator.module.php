@@ -41,6 +41,7 @@ class InputfieldRockTabulator extends InputfieldRockMarkup2 {
 
     // load tabulator
     $this->config->scripts->add($this->rm->assetUrl("lib/moment.min.js"));
+    $this->config->scripts->add($this->rm->assetUrl("lib/currency.min.js"));
     $this->config->scripts->add($this->rm->assetUrl("tabulator/js/tabulator$min.js"));
     $this->config->styles->add($this->rm->assetUrl("tabulator/css/tabulator_simple$min.css"));
     $this->config->styles->add($this->rm->assetUrl('RockTabulator.css'));

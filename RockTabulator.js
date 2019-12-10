@@ -124,6 +124,17 @@ RockTabulator.prototype.getGrid = function(name) {
 }
 
 /**
+ * currency.js proxy function with custom defaults
+ */
+RockTabulator.prototype.currency = function(val, options) {
+  var options = $.extend({
+    separator: '.',
+    decimal: ',',
+  }, options);
+  return currency(val, options).format();
+}
+
+/**
  * Return the translated string of requested property
  */
 RockTabulator.prototype._ = function(name) {
