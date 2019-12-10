@@ -5,6 +5,7 @@
  * @author Bernhard Baumrock, 15.07.2019
  * @license Licensed under MIT
  */
+if(!$this->modules->isInstalled("ProcessRockMarkup2")) return;
 class ProcessRockTabulator extends ProcessRockMarkup2 {
 
   public static function getModuleInfo() {

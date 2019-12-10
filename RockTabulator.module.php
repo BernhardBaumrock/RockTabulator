@@ -5,6 +5,10 @@
  * @author Bernhard Baumrock, 15.07.2019
  * @license Licensed under MIT
  */
+if(!$this->modules->isInstalled("RockMarkup2")) {
+  $this->error("Install RockMarkup2 to use RockTabulator!");
+  return;
+}
 class RockTabulator extends RockMarkup2 {
   public static function getModuleInfo() {
     return [
@@ -45,6 +49,12 @@ class RockTabulator extends RockMarkup2 {
    * @var WireArray
    */
   public $conf;
+
+  /**
+   * Cached grid objects
+   * @var array
+   */
+  private $grids = [];
 
   public function __construct() {
     // populate defaults, which will get replaced with actual
@@ -129,6 +139,7 @@ class RockTabulator extends RockMarkup2 {
    */
   public function getTranslationlinks($file) {
     if(!is_file($file)) return;
+    if(!is_array($this->wire->languages)) return;
     $file = base64_encode($file);
     $links = "<i class='fa fa-language'></i> Translate file to ";
     $del = '';
@@ -248,21 +259,25 @@ class RockTabulator extends RockMarkup2 {
     if(!$name) $name = $this->input->get('name', 'string');
     if(!$name) return;
 
-    // early exit for rockfinder2 sandbox as no file exists there
-    if($name == 'rockfinder2_sandbox') return;
+    // try to get grid from cache
+    if(array_key_exists($name, $this->grids)) $grid = $this->grids[$name];
+    else {
+      // early exit for rockfinder2 sandbox as no file exists there
+      if($name == 'rockfinder2_sandbox') return;
 
-    // set loadRows flag in session
-    $this->session->loadTabulatorRows = $loadRows;
+      // set loadRows flag in session
+      $this->session->loadTabulatorRows = $loadRows;
 
-    // get file and load data
-    $file = $this->getFile($name);
-    if(!$file) throw new WireException("No grid data for $name");
-    
-    $grid = $this->wire->files->render($file->path, [
-      'grid' => new RockTabulatorGrid($file->name),
-    ], [
-      'allowedPaths' => [$file->dir],
-    ]);
+      // get file and load data
+      $file = $this->getFile($name);
+      if(!$file) throw new WireException("No grid data for $name");
+      
+      $grid = $this->wire->files->render($file->path, [
+        'grid' => new RockTabulatorGrid($file->name),
+      ], [
+        'allowedPaths' => [$file->dir],
+      ]);
+    }
 
     // if the php file does not return a grid we exit here
     if(!$grid instanceof RockTabulatorGrid) return;
@@ -294,6 +309,7 @@ class RockTabulator extends RockMarkup2 {
     }
 
     // all good, return data
+    $this->grids[$name] = $grid;
     return $grid;
   }
   

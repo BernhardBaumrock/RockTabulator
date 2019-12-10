@@ -1,11 +1,13 @@
 <div class="RockTabulatorWrapper">
-  <div class="filter uk-margin-small-bottom"><?= $tabulator->topMarkup() ?></div>
-  <div class="header uk-margin-small-bottom uk-child-width-1-2@m" uk-grid>
-    <div class="uk-text-center uk-text-left@m">
-      <span class="pagination"></span>
-      <span class="rowcount"></span>
+  <div class="top uk-hidden">
+    <div class="filter uk-margin-small-bottom"><?= $tabulator->topMarkup() ?></div>
+    <div class="header uk-margin-small-bottom" uk-grid>
+      <div class="uk-width-1-1 uk-width-expand@m uk-text-center uk-text-left@m">
+        <span class="pagination"></span>
+        <span class="rowcount"></span>
+      </div>
+      <div class="uk-width-1-1 uk-width-auto@m gridactions uk-text-right@m"></div>
     </div>
-    <div class="gridactions uk-text-right@m"></div>
   </div>
   <div class="RockTabulator">
     <?php
