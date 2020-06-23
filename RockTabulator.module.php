@@ -13,7 +13,7 @@ class RockTabulator extends RockMarkup2 {
   public static function getModuleInfo() {
     return [
       'title' => 'RockTabulator Main Module',
-      'version' => '0.0.3',
+      'version' => '0.0.4',
       'summary' => 'RockTabulator Main Module that installs and uninstalls all related modules.',
       'singular' => true,
       'autoload' => true,
@@ -67,13 +67,13 @@ class RockTabulator extends RockMarkup2 {
    */
   public function init() {
     parent::init();
-    
+
     // intercept 404 page for returning ajax data
     require_once('RockTabulatorGrid.php');
     $this->addHookBefore('ProcessPageView::pageNotFound', $this, 'handleAjax');
   }
 
-  
+
   public function ready() {
     // load locales
     $this->conf = $this->wire(new WireArray);
@@ -108,7 +108,7 @@ class RockTabulator extends RockMarkup2 {
     $this->conf->set('locale', $locale);
     $this->conf->set('langs', [$locale => $data]);
   }
-  
+
   /**
    * Get tabulator locale string of current pw user's language
    *
@@ -126,7 +126,7 @@ class RockTabulator extends RockMarkup2 {
 
   /**
    * Set global JS configuration object
-   * 
+   *
    */
   public function setGlobalConfig() {
     $this->loadLocales();
@@ -216,7 +216,7 @@ class RockTabulator extends RockMarkup2 {
     } catch (\Throwable $th) {
       $data = $this->err($th->getMessage());
     }
-    
+
     $this->gzip($data);
   }
 
@@ -246,11 +246,11 @@ class RockTabulator extends RockMarkup2 {
 
   /**
    * Get grid data object
-   * 
+   *
    * If loadRows flag is set to TRUE it will return the data object without
    * loading all rows of the tabulator. This is necessary if one only wants
    * to retrieve rowactions or gridactions but does not need all data rows.
-   * 
+   *
    * @param string $name name of grid
    * @param bool $loadRows load row data?
    * @return mixed
@@ -271,7 +271,7 @@ class RockTabulator extends RockMarkup2 {
       // get file and load data
       $file = $this->getFile($name);
       if(!$file) throw new WireException("No grid data for $name");
-      
+
       $grid = $this->wire->files->render($file->path, [
         'grid' => new RockTabulatorGrid($file->name),
       ], [
@@ -312,7 +312,7 @@ class RockTabulator extends RockMarkup2 {
     $this->grids[$name] = $grid;
     return $grid;
   }
-  
+
   /**
    * Get example PHP code for main PHP file
    */
