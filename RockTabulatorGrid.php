@@ -2,9 +2,9 @@
 use RockTabulator\Rowaction;
 /**
  * Tabulator Data Class
- * 
+ *
  * This object holds data for RockTabulator Inputfields. It can hold data of
- * a RockFinder2 but can also get data from other sources. The difference to 
+ * a RockFinder2 but can also get data from other sources. The difference to
  * RockFinder2 data is that TabulatorData can be enriched by several other
  * contextual informations such as translated strings, key-value-pairs (such
  * as values of an options field that is stored in the data as key and should
@@ -46,7 +46,7 @@ class RockTabulatorGrid extends Wire {
     // set grid name
     // if not name is provided (eg in examples)
     $this->name = $name;
-    
+
     $this->rowactions = $this->wire(new WireArray);
 
     // By default the data type is set to "js". This means that the data for
@@ -67,7 +67,7 @@ class RockTabulatorGrid extends Wire {
 
     $type = $this->getDataType($data);
     switch($type) {
-      
+
       // regular php array can be set directly
       case 'array':
         $this->data = $data;
@@ -87,6 +87,12 @@ class RockTabulatorGrid extends Wire {
         $this->type = 'RockFinder2';
         break;
 
+      case 'RockFinder3':
+        /** @var RockFinder3 $data */
+        $this->data = $data->getRowArray();
+        $this->type = 'RockFinder3';
+        break;
+
       // sql data
       case 'sql':
         $query = $this->database->prepare($data);
@@ -102,7 +108,7 @@ class RockTabulatorGrid extends Wire {
 
   /**
    * Is this grid accessible for current user?
-   * 
+   *
    * You can set access for the grid via the access property of the object:
    * $grid->access = function($grid) {
    *   if($this->user->name != 'whatsoever') {
@@ -110,7 +116,7 @@ class RockTabulatorGrid extends Wire {
    *   }
    *   else return true;
    * };
-   * 
+   *
    * @return bool
    */
   public function access() {
@@ -129,6 +135,7 @@ class RockTabulatorGrid extends Wire {
     if(is_array($data)) return 'array';
     if($data instanceof RockFinder) return 'RockFinder';
     if($data instanceof RockFinder2) return 'RockFinder2';
+    if($data instanceof RockFinder3) return 'RockFinder3';
     if(is_string($data)) {
       // is it an sql select statement?
       $query = strtolower($data);
@@ -206,7 +213,7 @@ class RockTabulatorGrid extends Wire {
 
   /**
    * Add a translation to the grid's translations array
-   * 
+   *
    * You can either provide a single property or an array of key-value-pairs.
    *
    * @param array|string $name
