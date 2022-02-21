@@ -1,5 +1,11 @@
 # RockTabulator
 
+```
+#############################################################
+This module is archived and will not be developed any further
+#############################################################
+```
+
 ## Plugins
 
 RockTabulator has its own RockTabulatorPlugins object stored as `plugins`
